@@ -7,7 +7,7 @@ import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
 import { IconButton } from "./IconButton";
 
 export const ConnectWalletButton = () => {
-  const { connectAsync, isLoading } = useConnect();
+  const { connectAsync, isLoading, connect } = useConnect();
   const { address, isConnected } = useAccount();
   const { status } = useSession();
   const { requestChallengeAsync } = useAuthRequestChallengeEvm();
@@ -29,8 +29,10 @@ export const ConnectWalletButton = () => {
   };
 
   useEffect(() => {
-    console.log({ status });
-  }, [status]);
+    if (status !== "authenticated") return;
+
+    connect({ connector: new MetaMaskConnector() });
+  }, [connect, status]);
 
   return (
     <>
