@@ -17,7 +17,6 @@ export const ConnectWalletButton = () => {
     const { account, chain } = await connectAsync({
       connector: new MetaMaskConnector(),
     });
-
     const { message } = (await requestChallengeAsync({
       address: account,
       chainId: chain.id,

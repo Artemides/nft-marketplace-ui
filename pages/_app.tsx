@@ -1,4 +1,10 @@
-import { WagmiConfig, configureChains, createConfig, sepolia } from "wagmi";
+import {
+  WagmiConfig,
+  configureChains,
+  createConfig,
+  mainnet,
+  sepolia,
+} from "wagmi";
 import { Layout } from "../components/Layout";
 import { publicProvider } from "wagmi/providers/public";
 import "../styles/globals.css";
@@ -6,7 +12,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 
 const { publicClient, webSocketPublicClient } = configureChains(
-  [sepolia],
+  [sepolia, mainnet],
   [publicProvider()]
 );
 
