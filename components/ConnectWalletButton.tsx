@@ -22,9 +22,7 @@ export const ConnectWalletButton = () => {
       chainId: chain.id,
     }))!;
 
-    console.log({ message });
     const signature = await signMessageAsync({ message });
-    console.log({ signature });
     await signIn("moralis-auth", { message, signature, redirect: false });
   };
 
