@@ -1,12 +1,30 @@
+import { WagmiConfig, configureChains, createConfig, sepolia } from "wagmi";
 import { Layout } from "../components/Layout";
+import { publicProvider } from "wagmi/providers/public";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
+
+const { publicClient, webSocketPublicClient } = configureChains(
+  [sepolia],
+  [publicProvider()]
+);
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient,
+  webSocketPublicClient,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <WagmiConfig config={config}>
+      <SessionProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SessionProvider>
+    </WagmiConfig>
   );
 }
 
