@@ -38,7 +38,7 @@ export const ConnectWalletButton = () => {
   return (
     <>
       {isConnected && address ? (
-        <div className="flex items-center justify-between gap-2 rounded-full text-sm bg-stone-900 py-1 px-6">
+        <div className="flex items-center justify-between gap-2 rounded-full text-sm py-1 px-6">
           {ensAvatar && <Image src={ensAvatar} alt={`${address}`} />}
           <span>{`${address.slice(0, 10)}...${address.slice(-6)}`}</span>
           <PiPlugsConnectedBold size={24} className="text-green-500" />
