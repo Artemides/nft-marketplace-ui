@@ -21,11 +21,9 @@ const NFTMinter = () => {
     chainId: chain?.id,
   });
 
-  console.log({ contractConfig });
   const { write } = useContractWrite(contractConfig);
 
   const handleMintNft = () => {
-    console.log({ write });
     if (!write) return;
 
     write();
