@@ -1,13 +1,11 @@
-import formidable from "formidable";
 import * as Yup from "yup";
-export type MetadataNFT = {
-  name: string;
-  description: string;
-};
+import { MetadataNFT, TraitNFT, ValueType } from "../types/types";
 
-export type MetadataNFTFiles = {
-  file: formidable.File;
-};
+export const traitTypeSchema: Yup.ObjectSchema<TraitNFT> = Yup.object({
+  type: Yup.string().required("NFT trait type is required"),
+  value: Yup.string().required("NFT trait value is required"),
+  valueType: Yup.mixed<ValueType>().oneOf(["string", "number", "date"]),
+});
 
 export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
   name: Yup.string()
@@ -16,4 +14,5 @@ export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
   description: Yup.string()
     .max(150, "NFT description cannot be more than 150 chars")
     .required("NFT description required"),
+  traits: Yup.array().of(traitTypeSchema),
 });

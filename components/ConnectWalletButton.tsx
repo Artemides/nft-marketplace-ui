@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { PiPlugsConnectedBold, PiPlugsBold } from "react-icons/pi";
 import { useAccount, useConnect, useEnsAvatar, useSignMessage } from "wagmi";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";

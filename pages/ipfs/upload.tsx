@@ -1,6 +1,11 @@
-import IPFSUploader from "../../components/IPFSUploader";
+import AstroUpload from "../../components/AstroUpload";
+import React from "react";
 
 const upload = () => {
-  return <IPFSUploader />;
+  return (
+    <React.Fragment>
+      <AstroUpload />
+    </React.Fragment>
+  );
 };
 export default upload;

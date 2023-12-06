@@ -10,8 +10,9 @@ import { publicProvider } from "wagmi/providers/public";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import { Titillium_Web } from "next/font/google";
+
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { Titillium_Web } from "@next/font/google";
 import { hardhat } from "wagmi/chains";
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(

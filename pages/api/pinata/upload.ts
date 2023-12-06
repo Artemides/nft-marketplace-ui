@@ -1,14 +1,12 @@
 import formidable from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Middleware, handler } from "../../../middleware/handler";
-import {
-  MetadataNFT,
-  MetadataNFTFiles,
-  metadataNFTSchema,
-} from "../../../schema/metadataNFTSchema";
+import { metadataNFTSchema } from "../../../schema/metadataNFTSchema";
 import { ValidationError } from "yup";
 import { parseFields, parseFiles } from "../../../utils/formdata";
-import { saveFile } from "../../../utils/pinata";
+import { saveFile, saveJSON } from "../../../utils/pinata";
+import pinata from "../../../pinata.config";
+import { MetadataNFT, MetadataNFTFiles } from "../../../types/types";
 
 export const config = {
   api: {
@@ -55,15 +53,17 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
         throw new Error("Only images are supported");
       }
 
-      await saveFile(_files.file, metadata);
+      const { IpfsHash } = await saveFile(_files.file);
 
-      res
-        .status(200)
-        .json({
-          ...metadata,
-          file: _files.file.originalFilename,
-          status: "created",
-        });
+      const body = {
+        ...metadata,
+        file: _files.file.originalFilename,
+        status: "created",
+        ipfsHashL: IpfsHash,
+      };
+      const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
+
+      res.status(200).json({ metadataIpfsHash });
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
@@ -73,6 +73,13 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
 
       res.status(500).send("Server Error");
     }
+    return;
+  }
+
+  if (req.method === "GET") {
+    try {
+      const response = await pinata.pinList({ pageLimit: 1 });
+    } catch (error) {}
   }
 };
 
