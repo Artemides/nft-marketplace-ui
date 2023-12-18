@@ -2,8 +2,8 @@ import * as Yup from "yup";
 import { MetadataNFT, TraitNFT, ValueType } from "../types/types";
 
 export const traitTypeSchema: Yup.ObjectSchema<TraitNFT> = Yup.object({
-  type: Yup.string().required("NFT trait type is required"),
-  value: Yup.string().required("NFT trait value is required"),
+  type: Yup.string().max(15).required("NFT trait type is required"),
+  value: Yup.string().max(15).required("NFT trait value is required"),
   valueType: Yup.mixed<ValueType>().oneOf(["string", "number", "date"]),
 });
 

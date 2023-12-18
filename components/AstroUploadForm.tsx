@@ -11,17 +11,16 @@ import { useState } from "react";
 const initialMetadata: MetadataNFT = {
   description: "",
   name: "",
-  traits: [
-    { type: "sign", value: "aquarius" },
-    { type: "symbol", value: "aqua" },
-  ],
+  traits: [],
 };
 
 const AstroUploadForm = () => {
   const handleSubmit = (
     values: MetadataNFT,
     {}: FormikHelpers<MetadataNFT>
-  ) => {};
+  ) => {
+    console.log(values);
+  };
 
   return (
     <section id="upload-nft" className="grid grid-cols-2 gap-x-6 px-4">
@@ -30,8 +29,7 @@ const AstroUploadForm = () => {
         validationSchema={metadataNFTSchema}
         onSubmit={handleSubmit}
       >
-        {({ values }) => {
-          console.log({ values });
+        {({ values, errors }) => {
           return (
             <Form className="space-y-5">
               <Input
@@ -65,7 +63,7 @@ const AstroUploadForm = () => {
                       <div className="grid grid-cols-1 gap-2">
                         {values.traits?.map((trait, idx) => (
                           <Trait
-                            key={trait.value}
+                            key={idx}
                             idx={idx}
                             trait={trait}
                             onDelete={remove}
@@ -87,6 +85,12 @@ const AstroUploadForm = () => {
                   )}
                 />
               </div>
+              <button
+                type="submit"
+                className="bg-orange-500 py-2 px-8 rounded-md text-xl font-semibold"
+              >
+                Create
+              </button>
             </Form>
           );
         }}
