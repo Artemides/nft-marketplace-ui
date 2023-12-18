@@ -23,18 +23,20 @@ const Input: React.FC<InputProps> = ({ label, ...props }) => {
           {label}
         </label>
       )}
-      <input
-        {...field}
-        {...props}
-        className={twMerge(
-          `w-full px-2 py-2 rounded-md bg-transparent ring-1 ring-[#424242] focus:outline-none`,
-          meta.touched && meta.error && "ring-1 ring-red-500",
-          props.className
+      <div>
+        <input
+          {...field}
+          {...props}
+          className={twMerge(
+            `w-full px-2 py-2 rounded-md bg-transparent ring-1 ring-[#424242] focus:outline-none`,
+            meta.touched && meta.error && "ring-1 ring-red-500",
+            props.className
+          )}
+        />
+        {meta.touched && meta.error && (
+          <div className="text-red-500 text-xs">{meta.error}</div>
         )}
-      />
-      {meta.touched && meta.error && (
-        <div className="text-red-500 text-xs">{meta.error}</div>
-      )}
+      </div>
     </div>
   );
 };

@@ -52,11 +52,10 @@ const Trait: React.FC<TraitProps> = ({
   };
 
   return (
-    <div className="flex justify-between items-center  p-3 bg-neutral-900 rounded-lg">
+    <div className="flex justify-between items-center  p-3 bg-neutral-900/50 rounded-lg">
       <div className="flex-1 border-r border-r-neutral-500/50 pr-3">
         {isEditing ? (
           <>
-            <span className="block text-center mb-2">New Trait</span>
             <div className="flex gap-x-2 items-top">
               <Input
                 type="text"
