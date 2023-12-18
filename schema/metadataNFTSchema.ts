@@ -12,7 +12,7 @@ export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
     .max(15, "Name cannot contain more than 15 chars")
     .required("NFT name required"),
   description: Yup.string()
-    .max(150, "NFT description cannot be more than 150 chars")
+    .max(100, "NFT description cannot be more than 150 chars")
     .required("NFT description required"),
   traits: Yup.array().of(traitTypeSchema),
 });

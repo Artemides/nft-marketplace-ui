@@ -11,3 +11,7 @@ body {
 * {
   box-sizing: border-box;
 }
+
+textarea::-webkit-scrollbar {
+  width: 0;
+}
