@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { MetadataNFT, TraitNFT, ValueType } from "../types/types";
+import { FileNFT, MetadataNFT, NFT, TraitNFT, ValueType } from "../types/types";
 
 export const traitTypeSchema: Yup.ObjectSchema<TraitNFT> = Yup.object({
   type: Yup.string().max(15).required("NFT trait type is required"),
@@ -16,3 +16,30 @@ export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
     .required("NFT description required"),
   traits: Yup.array().of(traitTypeSchema),
 });
+
+const fileNFTSchema = Yup.object().shape({
+  file: Yup.mixed<File>()
+    .required("NFT File is required")
+    .test("File type validation", "File is not allowed", (file) => {
+      if (!file) return true;
+
+      const allowedFormats = [
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "image/png",
+        "image/svg",
+      ];
+      console.log({ file });
+      console.log("size: ", file.size);
+      const isAllowedFormat = allowedFormats.includes(file.type);
+      return isAllowedFormat;
+    })
+    .test("File size validation", "File is too large", (file) => {
+      if (!file) return true;
+
+      return file.size <= 50 * 1024 * 1024;
+    }),
+});
+
+export const NFTSchema = metadataNFTSchema.concat(fileNFTSchema);

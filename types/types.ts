@@ -17,3 +17,9 @@ export type MetadataNFT = {
 export type MetadataNFTFiles = {
   file: formidable.File;
 };
+
+export type FileNFT = {
+  file: File | null;
+};
+
+export type NFT = MetadataNFT & FileNFT;
