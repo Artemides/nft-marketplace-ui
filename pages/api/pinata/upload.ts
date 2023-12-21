@@ -53,15 +53,16 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
         throw new Error("Only images are supported");
       }
 
-      const { IpfsHash } = await saveFile(_files.file);
+      // const { IpfsHash } = await saveFile(_files.file);
+      const IpfsHash = "0xIpfsHashFile";
 
       const body = {
         ...metadata,
-        file: _files.file.originalFilename,
-        status: "created",
-        ipfsHashL: IpfsHash,
+        image: IpfsHash,
       };
-      const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
+      console.log({ body });
+      // const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
+      const metadataIpfsHash = "0xIpfsHashFile";
 
       res.status(200).json({ metadataIpfsHash });
     } catch (error) {

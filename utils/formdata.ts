@@ -1,6 +1,6 @@
 import formidable from "formidable";
 
-type ParsedFields<T> = { [K in keyof T]: T[K] | string };
+type ParsedFields<T> = { [K in keyof T]: T[K] };
 type ParsedFiles<T> = { [K in keyof T]: formidable.File | undefined };
 
 export function parseFields<T>(
@@ -8,7 +8,7 @@ export function parseFields<T>(
 ): ParsedFields<T> {
   const metadata: ParsedFields<T> = {} as ParsedFields<T>;
   for (const [key, value] of Object.entries(fields)) {
-    metadata[key as keyof T] = (value && value[0]) || "";
+    metadata[key as keyof T] = (value && value[0]) as T[keyof T];
   }
 
   return metadata;

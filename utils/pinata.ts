@@ -24,7 +24,7 @@ export const saveFile = async (
   }
 };
 export const saveJSON = async (
-  metadata: MetadataNFT
+  metadata: MetadataNFT & { image: string }
 ): Promise<PinataPinResponse> => {
   try {
     const options: PinataPinOptions = {};

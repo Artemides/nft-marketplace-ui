@@ -7,7 +7,10 @@ import Textarea from "./Form/Textarea";
 import { NFTSchema, metadataNFTSchema } from "../schema/metadataNFTSchema";
 import Trait from "./Trait";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
+import Image from "next/image";
+import axios from "axios";
 
 const initialMetadata: NFT = {
   description: "",
@@ -18,14 +21,36 @@ const initialMetadata: NFT = {
 
 const AstroUploadForm = () => {
   const nftFileRef = useRef<HTMLInputElement>(null);
+  const [nftFile, setNftFile] = useState<File | null>(null);
 
   const handleBrowseFile = () => {
     if (!nftFileRef.current) return;
 
     nftFileRef.current.click();
   };
-  const handleSubmit = (values: NFT, {}: FormikHelpers<NFT>) => {
-    console.log(values);
+  const handleSubmit = async (
+    values: NFT,
+    { setSubmitting }: FormikHelpers<NFT>
+  ) => {
+    if (!values.file) return;
+
+    try {
+      setSubmitting(true);
+      const data = new FormData();
+      data.append("file", values.file, values.file?.name);
+      data.append("name", values.name);
+      data.append("description", values.description);
+      data.append("traits", JSON.stringify(values.traits));
+
+      const response = await axios.post("/api/pinata/upload", data);
+      const { metadataIpfsHash } = response.data;
+      console.log({ metadataIpfsHash });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setSubmitting(false);
+    }
+
     console.log({ size: values.file?.size });
   };
 
@@ -51,6 +76,7 @@ const AstroUploadForm = () => {
                     if (!e.currentTarget.files) return;
 
                     setFieldValue("file", e.currentTarget.files[0], true);
+                    setNftFile(e.currentTarget.files[0]);
                   }}
                   withMessage={false}
                 />
@@ -119,21 +145,35 @@ const AstroUploadForm = () => {
           }}
         </Formik>
       </div>
-      <div className="p-2">
+      <div className="p-2 ">
         <div
-          className="aspect-square flex flex-col items-center justify-center border border-neutral-500 border-dashed rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition"
+          className={twMerge(
+            `relative overflow-hidden aspect-square flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
+            !nftFile && " border border-neutral-500 border-dashed"
+          )}
           onClick={handleBrowseFile}
         >
-          <MdOutlineFileUpload size={40} />
-          <p className="text-xs  text-center">
-            <span className="font-semibold text-sky-500 text-sm ">
-              Browse files
-            </span>
-            <br />
-            Max size: 50MB
-            <br />
-            JPG, JPEG, PNG, SVG or GIF
-          </p>
+          {nftFile ? (
+            <Image
+              src={URL.createObjectURL(nftFile)}
+              fill
+              className="object-cover hover:opacity-80 transition"
+              alt={nftFile.name}
+            />
+          ) : (
+            <>
+              <MdOutlineFileUpload size={40} />
+              <p className="text-xs  text-center">
+                <span className="font-semibold text-sky-500 text-sm ">
+                  Browse files
+                </span>
+                <br />
+                Max size: 50MB
+                <br />
+                JPG, JPEG, PNG, SVG or GIF
+              </p>
+            </>
+          )}
         </div>
       </div>
     </section>
