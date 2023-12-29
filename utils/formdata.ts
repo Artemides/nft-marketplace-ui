@@ -8,6 +8,10 @@ export function parseFields<T>(
 ): ParsedFields<T> {
   const metadata: ParsedFields<T> = {} as ParsedFields<T>;
   for (const [key, value] of Object.entries(fields)) {
+    if (key === "traits" && value) {
+      metadata[key as keyof T] = JSON.parse(value[0]) as T[keyof T];
+      continue;
+    }
     metadata[key as keyof T] = (value && value[0]) as T[keyof T];
   }
 

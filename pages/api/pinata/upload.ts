@@ -55,7 +55,6 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
 
       // const { IpfsHash } = await saveFile(_files.file);
       const IpfsHash = "0xIpfsHashFile";
-
       const body = {
         ...metadata,
         image: IpfsHash,
