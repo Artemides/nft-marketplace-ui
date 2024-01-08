@@ -11,6 +11,8 @@ import { useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 import axios from "axios";
+import toast from "react-hot-toast";
+import CustomToast from "./CustomToast";
 
 const initialMetadata: NFT = {
   description: "",
@@ -32,6 +34,7 @@ const AstroUploadForm = () => {
     values: NFT,
     { setSubmitting }: FormikHelpers<NFT>
   ) => {
+    console.log("submitting");
     if (!values.file) return;
 
     try {
@@ -45,13 +48,18 @@ const AstroUploadForm = () => {
       const response = await axios.post("/api/pinata/upload", data);
       const { metadataIpfsHash } = response.data;
       console.log({ metadataIpfsHash });
+      toast.custom((t) => (
+        <CustomToast
+          t={t}
+          description={`Your ${values.name} NFT has been created`}
+          image={nftFile ? URL.createObjectURL(nftFile) : undefined}
+        />
+      ));
     } catch (error) {
       console.error(error);
     } finally {
       setSubmitting(false);
     }
-
-    console.log({ size: values.file?.size });
   };
 
   return (
@@ -59,8 +67,8 @@ const AstroUploadForm = () => {
       <div className="min-h-fit pt-12">
         <Formik
           initialValues={initialMetadata}
-          validationSchema={NFTSchema}
           onSubmit={handleSubmit}
+          // validationSchema={NFTSchema}
         >
           {({ values, setFieldValue, isSubmitting, isValid, dirty }) => {
             return (

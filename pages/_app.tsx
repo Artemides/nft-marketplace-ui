@@ -14,6 +14,7 @@ import { SessionProvider } from "next-auth/react";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { Titillium_Web } from "@next/font/google";
 import { hardhat } from "wagmi/chains";
+import ToasterProvider from "../providers/ToasterProvider";
 
 const { publicClient, webSocketPublicClient, chains } = configureChains(
   [sepolia, mainnet, hardhat],
@@ -37,6 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <WagmiConfig config={config}>
       <SessionProvider>
         <Layout className={titillium_Web.className}>
+          <ToasterProvider />
           <Component {...pageProps} />
         </Layout>
       </SessionProvider>
