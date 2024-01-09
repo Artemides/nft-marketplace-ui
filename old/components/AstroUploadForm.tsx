@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
 
-import { MetadataNFT, NFT, TraitNFT } from "../types/types";
+import { MetadataNFT, NFT, TraitNFT } from "../../types/types";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
@@ -10,7 +10,7 @@ import axios from "axios";
 
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
-import { NFTSchema } from "../schema/metadataNFTSchema";
+import { NFTSchema } from "../../schema/metadataNFTSchema";
 import Trait from "./Trait";
 import CustomToast from "./CustomToast";
 import { AlchemyContext } from "../contexts/AlchemyContext";

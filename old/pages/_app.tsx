@@ -7,11 +7,11 @@ import { hardhat, sepolia, mainnet } from "wagmi/chains";
 
 import { Layout } from "../components/Layout";
 import "../styles/globals.css";
-import ToasterProvider from "../providers/ToasterProvider";
-import AlchemyProvider from "../providers/AlchemyProvider";
+import ToasterProvider from "../../providers/ToasterProvider";
+import AlchemyProvider from "../../providers/AlchemyProvider";
 import { injected, metaMask } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { config } from "../config";
+import { config } from "../../config";
 import { id } from "alchemy-sdk/dist/src/api/utils";
 import { createClient } from "viem";
 import { useState } from "react";

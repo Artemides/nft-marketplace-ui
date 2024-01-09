@@ -4,7 +4,7 @@ import { MdDone, MdEdit } from "react-icons/md";
 
 import Input from "./Form/Input";
 
-import { MetadataNFT, TraitNFT } from "../types/types";
+import { MetadataNFT, TraitNFT } from "../../types/types";
 import { useFormikContext } from "formik";
 
 type TraitProps = {

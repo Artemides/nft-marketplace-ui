@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { LoadButton } from "./LoadButton";
-import { config } from "../config";
+import { config } from "../../config";
 import Image from "next/image";
 import NftArt from "../public/images/nft-art.jpeg";
 import {
@@ -10,7 +10,7 @@ import {
   usePrepareContractWrite,
   useWalletClient,
 } from "wagmi";
-import NftContract from "../deployments/localhost/Nft.json";
+import NftContract from "../../deployments/localhost/Nft.json";
 
 const NFTMinter = () => {
   const { chain } = useNetwork();
