@@ -1,19 +1,20 @@
+import { useContext, useRef, useState } from "react";
+import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
 
 import { MetadataNFT, NFT, TraitNFT } from "../types/types";
+import { MdOutlineFileUpload } from "react-icons/md";
+import { twMerge } from "tailwind-merge";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
-import { NFTSchema, metadataNFTSchema } from "../schema/metadataNFTSchema";
+import { NFTSchema } from "../schema/metadataNFTSchema";
 import Trait from "./Trait";
-import { MdOutlineFileUpload } from "react-icons/md";
-import { useRef, useState } from "react";
-import { twMerge } from "tailwind-merge";
-import Image from "next/image";
-import axios from "axios";
-import toast from "react-hot-toast";
 import CustomToast from "./CustomToast";
-
+import { AlchemyContext } from "../contexts/AlchemyContext";
+import { useWriteContract } from "wagmi";
 const initialMetadata: NFT = {
   description: "",
   name: "",
@@ -23,7 +24,9 @@ const initialMetadata: NFT = {
 
 const AstroUploadForm = () => {
   const nftFileRef = useRef<HTMLInputElement>(null);
+
   const [nftFile, setNftFile] = useState<File | null>(null);
+  const {} = useWriteContract({});
 
   const handleBrowseFile = () => {
     if (!nftFileRef.current) return;
@@ -68,7 +71,7 @@ const AstroUploadForm = () => {
         <Formik
           initialValues={initialMetadata}
           onSubmit={handleSubmit}
-          // validationSchema={NFTSchema}
+          validationSchema={NFTSchema}
         >
           {({ values, setFieldValue, isSubmitting, isValid, dirty }) => {
             return (

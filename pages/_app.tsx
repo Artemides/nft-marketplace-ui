@@ -1,25 +1,16 @@
-import {
-  WagmiConfig,
-  configureChains,
-  createConfig,
-  mainnet,
-  sepolia,
-} from "wagmi";
-import { Layout } from "../components/Layout";
-import { publicProvider } from "wagmi/providers/public";
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { Titillium_Web } from "@next/font/google";
-import { hardhat } from "wagmi/chains";
-import ToasterProvider from "../providers/ToasterProvider";
+import type { AppProps } from "next/app";
 
-const { publicClient, webSocketPublicClient, chains } = configureChains(
-  [sepolia, mainnet, hardhat],
-  [publicProvider()]
-);
+import { WagmiProvider, createConfig, http } from "wagmi";
+import { hardhat, sepolia, mainnet } from "wagmi/chains";
+
+import { Layout } from "../components/Layout";
+import "../styles/globals.css";
+import ToasterProvider from "../providers/ToasterProvider";
+import AlchemyProvider from "../providers/AlchemyProvider";
+import { metaMask } from "wagmi/connectors";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const titillium_Web = Titillium_Web({
   subsets: ["latin"],
@@ -27,22 +18,31 @@ const titillium_Web = Titillium_Web({
 });
 
 const config = createConfig({
-  autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains })],
-  publicClient,
-  webSocketPublicClient,
+  chains: [sepolia, mainnet, hardhat],
+  connectors: [metaMask()],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+    [hardhat.id]: http(),
+  },
 });
+
+const client = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig config={config}>
-      <SessionProvider>
-        <Layout className={titillium_Web.className}>
-          <ToasterProvider />
-          <Component {...pageProps} />
-        </Layout>
-      </SessionProvider>
-    </WagmiConfig>
+    <WagmiProvider config={config} reconnectOnMount={false}>
+      <QueryClientProvider client={client}>
+        <SessionProvider>
+          <Layout className={titillium_Web.className}>
+            <ToasterProvider />
+            <AlchemyProvider>
+              <Component {...pageProps} />
+            </AlchemyProvider>
+          </Layout>
+        </SessionProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 
