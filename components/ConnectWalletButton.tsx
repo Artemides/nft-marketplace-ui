@@ -1,5 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+
 import { PiPlugsConnectedBold, PiPlugsBold } from "react-icons/pi";
+import { FaSignature } from "react-icons/fa";
 import {
   useAccount,
   useConnect,
@@ -11,8 +14,9 @@ import {
 import { signIn, useSession } from "next-auth/react";
 import { useAuthRequestChallengeEvm } from "@moralisweb3/next";
 import { IconButton } from "./IconButton";
-import Image from "next/image";
 import { metaMask } from "wagmi/connectors";
+import toast from "react-hot-toast";
+import MetamasSVG from "../public/images/icons/metamask-icon.svg";
 
 export const ConnectWalletButton = () => {
   const { isLoading, connect } = useConnect();
@@ -21,9 +25,8 @@ export const ConnectWalletButton = () => {
   const { address, isConnected, chainId } = useAccount();
   const { status } = useSession();
   const { requestChallengeAsync } = useAuthRequestChallengeEvm();
-  const { signMessageAsync } = useSignMessage();
+  const { signMessageAsync, signMessage } = useSignMessage();
   const { data: ensAvatar } = useEnsAvatar();
-
   const connectWallet = async () => {
     connect({ connector: metaMask() });
   };
@@ -33,17 +36,37 @@ export const ConnectWalletButton = () => {
     if (!chainId || !address) return;
     console.log("resigning");
     const signSession = async () => {
-      const { message } = (await requestChallengeAsync({
-        address,
-        chainId,
-      }))!;
+      try {
+        const { message } = (await requestChallengeAsync({
+          address,
+          chainId,
+        }))!;
 
-      const signature = await signMessageAsync({ message });
-      await signIn("moralis-auth", { message, signature, redirect: false });
+        const signature = await signMessageAsync({ message });
+        const ss = signMessage({ message: "" });
+        await signIn("moralis-auth", { message, signature, redirect: false });
+      } catch (error: any) {
+        toast.error("Signature required for session", {
+          icon: (
+            <Image src={MetamasSVG} alt="metamask" width={24} height={24} />
+          ),
+          style: { color: "#ff6952" },
+        });
+        if (isConnected) disconnect();
+        console.error(error);
+      }
     };
 
     signSession();
-  }, [chainId, address, requestChallengeAsync, signMessageAsync]);
+  }, [
+    chainId,
+    address,
+    requestChallengeAsync,
+    signMessageAsync,
+    isConnected,
+    disconnect,
+    signMessage,
+  ]);
 
   useEffect(() => {
     if (status !== "authenticated") return;

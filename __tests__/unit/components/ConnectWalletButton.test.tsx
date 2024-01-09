@@ -1,7 +1,7 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { ConnectWalletButton } from "../../../components/ConnectWalletButton";
 import { useConnect } from "wagmi";
-import { MetaMaskConnector } from "wagmi/dist/connectors/metaMask";
+import { metaMask } from "wagmi/connectors";
 
 jest.mock("wagmi", () => {
   useConnect: jest.fn(() => ({
@@ -39,7 +39,7 @@ describe("Connect Wallet Button", () => {
     fireEvent.click(button);
     await waitFor(() => {
       expect(useConnect().connectAsync).toHaveBeenCalledWith({
-        connector: new MetaMaskConnector(),
+        connector: metaMask(),
       });
     });
   });

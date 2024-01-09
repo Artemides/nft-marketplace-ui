@@ -9,29 +9,33 @@ import { Layout } from "../components/Layout";
 import "../styles/globals.css";
 import ToasterProvider from "../providers/ToasterProvider";
 import AlchemyProvider from "../providers/AlchemyProvider";
-import { metaMask } from "wagmi/connectors";
+import { injected, metaMask } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { config } from "../config";
+import { id } from "alchemy-sdk/dist/src/api/utils";
+import { createClient } from "viem";
+import { useState } from "react";
 
 const titillium_Web = Titillium_Web({
   subsets: ["latin"],
   weight: ["300", "400", "600", "700"],
 });
 
-const config = createConfig({
+const wagmiConfig = createConfig({
   chains: [sepolia, mainnet, hardhat],
   connectors: [metaMask()],
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [sepolia.id]: http(config.sepoliaRpcUrl, { key: "alchemy" }),
     [hardhat.id]: http(),
   },
+  ssr: true,
 });
 
-const client = new QueryClient();
-
 function MyApp({ Component, pageProps }: AppProps) {
+  const [client] = useState(() => new QueryClient());
   return (
-    <WagmiProvider config={config} reconnectOnMount={false}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={client}>
         <SessionProvider>
           <Layout className={titillium_Web.className}>
