@@ -1,4 +1,6 @@
-import { useContext, useRef, useState } from "react";
+"use client";
+
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
 
