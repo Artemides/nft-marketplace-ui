@@ -70,7 +70,7 @@ export const ConnectWalletButton = () => {
       {isConnected && address && (
         <div className="flex items-center justify-between gap-2 rounded-full text-sm py-1 px-6 ">
           {ensAvatar && <Image src={ensAvatar} alt={`${address}`} />}
-          <span className="font-bold">{`${address.slice(
+          <span className="font-medium">{`${address.slice(
             0,
             10
           )}...${address.slice(-6)}`}</span>

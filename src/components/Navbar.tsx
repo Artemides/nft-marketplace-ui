@@ -3,7 +3,7 @@ import React from "react";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 export const Navbar = () => {
   return (
-    <nav className="sticky top-0  h-[72px] w-full bg-neutral-600/20  backdrop-blur-sm  z-10">
+    <nav className="sticky top-0  h-[72px] w-full bg-neutral-600/20  backdrop-blur-sm  z-10 border-b-[1px] border-neutral-700/35">
       <div className="h-full px-10 flex items-center justify-between">
         <Link href={"/"} className="text-2xl font-bold ">
           NFT.<small className="font-light">Market</small>
