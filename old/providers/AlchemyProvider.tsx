@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import { AlchemyContext } from "../contexts/AlchemyContext";
+import { AlchemyContext } from "../../old/contexts/AlchemyContext";
 import { Alchemy, AlchemySettings, Network } from "alchemy-sdk";
-import { config } from "../config";
+import { config } from "../../old/config";
 
 const settings: AlchemySettings = {
   apiKey: config.alchemyApiKey,
