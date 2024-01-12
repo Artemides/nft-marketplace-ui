@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
 
-import { NFT, TraitNFT } from "../types/types";
+import { MetadataNFT, NFT, TraitNFT } from "../types/types";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
@@ -16,6 +16,7 @@ import { NFTSchema } from "../schema/metadataNFTSchema";
 import Trait from "./Trait";
 import CustomToast from "./CustomToast";
 import { useWriteContract } from "wagmi";
+import { uploadToPinata } from "@/actions/pinataUpload";
 const initialMetadata: NFT = {
   description: "",
   name: "",
@@ -39,18 +40,19 @@ const AstroUploadForm = () => {
     { setSubmitting }: FormikHelpers<NFT>
   ) => {
     console.log("submitting");
-    if (!values.file) return;
 
     try {
       setSubmitting(true);
       const data = new FormData();
-      data.append("file", values.file, values.file?.name);
-      data.append("name", values.name);
-      data.append("description", values.description);
-      data.append("traits", JSON.stringify(values.traits));
+      if (values.file) {
+        data.append("file", values.file, values.file?.name);
+      }
+      const metadata: MetadataNFT = values;
+      data.append("metadata", JSON.stringify(metadata));
+      // const response = await axios.post("/api/pinata", data);
+      // const { metadataIpfsHash } = response.data;
+      const metadataIpfsHash = await uploadToPinata(data);
 
-      const response = await axios.post("/api/pinata/upload", data);
-      const { metadataIpfsHash } = response.data;
       console.log({ metadataIpfsHash });
       toast.custom((t) => (
         <CustomToast
@@ -60,7 +62,8 @@ const AstroUploadForm = () => {
         />
       ));
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error)
+        toast.error(error.message, { style: { color: "#fa594d" } });
     } finally {
       setSubmitting(false);
     }

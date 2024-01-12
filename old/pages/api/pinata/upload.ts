@@ -1,12 +1,11 @@
 import formidable from "formidable";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Middleware, handler } from "../../../middleware/handler";
-import { metadataNFTSchema } from "../../../../schema/metadataNFTSchema";
+import { metadataNFTSchema } from "../../../schema/metadataNFTSchema";
 import { ValidationError } from "yup";
-import { parseFields, parseFiles } from "../../../../utils/formdata";
-import { saveFile, saveJSON } from "../../../../utils/pinata";
+import { parseFields, parseFiles } from "../../../utils/formdata";
 import pinata from "../../../../pinata.config";
-import { MetadataNFT, MetadataNFTFiles } from "../../../../types/types";
+import { MetadataNFT, MetadataNFTFiles } from "../../../types/types";
 
 export const config = {
   api: {

@@ -17,7 +17,7 @@ export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
   traits: Yup.array().of(traitTypeSchema),
 });
 
-const fileNFTSchema = Yup.object().shape({
+export const fileNFTSchema = Yup.object().shape({
   file: Yup.mixed<File>()
     .required("NFT File is required")
     .test("File type validation", "File is not allowed", (file) => {
@@ -30,8 +30,6 @@ const fileNFTSchema = Yup.object().shape({
         "image/png",
         "image/svg",
       ];
-      console.log({ file });
-      console.log("size: ", file.size);
       const isAllowedFormat = allowedFormats.includes(file.type);
       return isAllowedFormat;
     })
