@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { ReactNode, useState } from "react";
 import { WagmiProvider } from "wagmi";
 import { config } from "../../wagmi";
-
 type WagmiProps = {
   children: ReactNode;
 };

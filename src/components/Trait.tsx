@@ -13,6 +13,7 @@ type TraitProps = {
   onEdit: (idx: number, trait: TraitNFT) => void;
   onDelete: (idx: number) => void;
   editing?: boolean;
+  disabled?: boolean;
 };
 
 const Trait: React.FC<TraitProps> = ({
@@ -21,11 +22,12 @@ const Trait: React.FC<TraitProps> = ({
   onEdit,
   onDelete,
   editing,
+  disabled,
 }) => {
   const { errors } = useFormikContext<MetadataNFT>();
   const [isEditing, setIsEditing] = useState(editing || false);
   const [copyTrait] = useState(trait);
-  const ableToSave = errors.traits?.[idx];
+  const ableToSave = errors.traits?.[idx] || !disabled;
 
   const handleSaveTrait = () => {
     if (!isEditing) {
@@ -61,12 +63,14 @@ const Trait: React.FC<TraitProps> = ({
                 type="text"
                 name={`traits.${idx}.type`}
                 placeholder="Trait type"
+                disabled={disabled}
               />
 
               <Input
                 type="text"
                 name={`traits.${idx}.value`}
                 placeholder="Trait value"
+                disabled={disabled}
               />
             </div>
           </>
@@ -89,7 +93,8 @@ const Trait: React.FC<TraitProps> = ({
         <button
           type="button"
           onClick={handleDeleteTrait}
-          className="hover:text-neutral-400"
+          className="hover:text-neutral-400 disabled:cursor-not-allowed disabled:text-neutral-800"
+          disabled={Boolean(ableToSave)}
         >
           <IoMdClose size={21} />
         </button>

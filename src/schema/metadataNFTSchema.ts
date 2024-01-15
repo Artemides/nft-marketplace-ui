@@ -17,7 +17,7 @@ export const metadataNFTSchema: Yup.ObjectSchema<MetadataNFT> = Yup.object({
   traits: Yup.array().of(traitTypeSchema),
 });
 
-export const fileNFTSchema = Yup.object().shape({
+export const fileNFTSchema = Yup.object({
   file: Yup.mixed<File>()
     .required("NFT File is required")
     .test("File type validation", "File is not allowed", (file) => {

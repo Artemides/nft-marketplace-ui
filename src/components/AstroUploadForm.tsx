@@ -4,19 +4,21 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
 
+import { Address } from "abitype";
 import { MetadataNFT, NFT, TraitNFT } from "../types/types";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { TransactionExecutionError } from "viem";
 
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
 import { NFTSchema } from "../schema/metadataNFTSchema";
 import Trait from "./Trait";
-import CustomToast from "./CustomToast";
-import { useWriteContract } from "wagmi";
 import { uploadToPinata } from "@/actions/pinataUpload";
+import { useWriteAstroNft } from "@/nftMarketHooks";
+import { config } from "../../config";
+
 const initialMetadata: NFT = {
   description: "",
   name: "",
@@ -26,9 +28,12 @@ const initialMetadata: NFT = {
 
 const AstroUploadForm = () => {
   const nftFileRef = useRef<HTMLInputElement>(null);
-
+  const {
+    writeContractAsync: writeAstro,
+    error,
+    failureReason,
+  } = useWriteAstroNft();
   const [nftFile, setNftFile] = useState<File | null>(null);
-  const {} = useWriteContract({});
 
   const handleBrowseFile = () => {
     if (!nftFileRef.current) return;
@@ -45,23 +50,41 @@ const AstroUploadForm = () => {
       setSubmitting(true);
       const data = new FormData();
       if (values.file) {
-        data.append("file", values.file, values.file?.name);
+        data.append("file", values.file, values.file.name);
       }
-      const metadata: MetadataNFT = values;
+      const metadata: MetadataNFT = { ...values };
+
       data.append("metadata", JSON.stringify(metadata));
-      // const response = await axios.post("/api/pinata", data);
-      // const { metadataIpfsHash } = response.data;
       const metadataIpfsHash = await uploadToPinata(data);
 
-      console.log({ metadataIpfsHash });
-      toast.custom((t) => (
-        <CustomToast
-          t={t}
-          description={`Your ${values.name} NFT has been created`}
-          image={nftFile ? URL.createObjectURL(nftFile) : undefined}
-        />
-      ));
+      console.log({ address: config.pubNftMarketAddress });
+
+      const mintAstro = writeAstro({
+        address: config.pubNftMarketAddress as Address,
+        functionName: "mint",
+        args: [metadataIpfsHash as string],
+      });
+
+      toast.promise(mintAstro, {
+        loading: `Please Sign or Reject "Mint Astro" Transaction on Metamask `,
+        success: (tx) => (
+          <p>
+            <b>{metadata.name}</b> Astro NFT Minted, <br />
+            at:{" "}
+            <b>
+              {tx.slice(0, 6)}...{tx.slice(tx.length - 6, tx.length)}
+            </b>
+          </p>
+        ),
+        error: (err: TransactionExecutionError) => `${err.shortMessage}`,
+      });
     } catch (error) {
+      console.log({ error });
+      if (error instanceof TransactionExecutionError) {
+        toast.error(error.shortMessage, { style: { color: "#fa594d" } });
+        return;
+      }
+
       if (error instanceof Error)
         toast.error(error.message, { style: { color: "#fa594d" } });
     } finally {
@@ -94,12 +117,14 @@ const AstroUploadForm = () => {
                     setNftFile(e.currentTarget.files[0]);
                   }}
                   withMessage={false}
+                  disabled={isSubmitting}
                 />
                 <Input
                   type="text"
                   name="name"
                   placeholder="Name your NFT"
                   label="Name: *"
+                  disabled={isSubmitting}
                 />
                 <Textarea
                   name="description"
@@ -107,6 +132,7 @@ const AstroUploadForm = () => {
                   label="Description: *"
                   className="resize-none scroll-w-0"
                   rows={4}
+                  disabled={isSubmitting}
                 />
                 <div>
                   <p className="font-semibold">Traits</p>
@@ -132,6 +158,7 @@ const AstroUploadForm = () => {
                               onDelete={remove}
                               onEdit={replace}
                               editing={!trait.type || !trait.value}
+                              disabled={isSubmitting}
                             />
                           ))}
                         </div>
