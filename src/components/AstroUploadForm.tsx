@@ -10,7 +10,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
 import { TransactionExecutionError } from "viem";
-
+import { BiSolidCopyAlt } from "react-icons/bi";
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
 import { NFTSchema } from "../schema/metadataNFTSchema";
@@ -18,6 +18,9 @@ import Trait from "./Trait";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
 import { config } from "../../config";
+import { newTrait } from "@/constants/constants";
+import Clipboard from "./Clipboard";
+import Link from "next/link";
 
 const initialMetadata: NFT = {
   description: "",
@@ -28,11 +31,7 @@ const initialMetadata: NFT = {
 
 const AstroUploadForm = () => {
   const nftFileRef = useRef<HTMLInputElement>(null);
-  const {
-    writeContractAsync: writeAstro,
-    error,
-    failureReason,
-  } = useWriteAstroNft();
+  const { writeContractAsync: writeAstro, data: txHash } = useWriteAstroNft();
   const [nftFile, setNftFile] = useState<File | null>(null);
 
   const handleBrowseFile = () => {
@@ -40,12 +39,11 @@ const AstroUploadForm = () => {
 
     nftFileRef.current.click();
   };
+
   const handleSubmit = async (
     values: NFT,
     { setSubmitting }: FormikHelpers<NFT>
   ) => {
-    console.log("submitting");
-
     try {
       setSubmitting(true);
       const data = new FormData();
@@ -56,8 +54,6 @@ const AstroUploadForm = () => {
 
       data.append("metadata", JSON.stringify(metadata));
       const metadataIpfsHash = await uploadToPinata(data);
-
-      console.log({ address: config.pubNftMarketAddress });
 
       const mintAstro = writeAstro({
         address: config.pubNftMarketAddress as Address,
@@ -166,7 +162,7 @@ const AstroUploadForm = () => {
                           type="button"
                           className="font-semibold hover:text-neutral-400"
                           onClick={() => {
-                            push({ type: "", value: "" });
+                            push(newTrait);
                           }}
                         >
                           + Add trait
@@ -217,6 +213,13 @@ const AstroUploadForm = () => {
             </>
           )}
         </div>
+        {txHash && (
+          <Clipboard copy={txHash} className="mt-2">
+            <Link href={"/"}>
+              Transaction: <b>{txHash}</b>
+            </Link>
+          </Clipboard>
+        )}
       </div>
     </section>
   );
