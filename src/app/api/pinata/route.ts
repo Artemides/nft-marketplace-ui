@@ -38,12 +38,12 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     const IpfsHash = "0xIpfsHashFile";
     const body = {
       ...metadata,
-      image: IpfsHash,
+      image: `ipfs://${IpfsHash}`,
     };
     console.log({ body });
     // const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
     const metadataIpfsHash = "0xIpfsHashFile";
-    return NextResponse.json({ metadataIpfsHash });
+    return NextResponse.json({ metadataIpfsHash, metadata });
   } catch (error) {
     console.log(error);
     if (error instanceof Error) {

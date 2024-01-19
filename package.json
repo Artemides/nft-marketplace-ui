@@ -17,6 +17,7 @@
     "formik": "^2.4.5",
     "next": "14.0.4",
     "pino-pretty": "^10.3.1",
+    "query-string": "^8.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",

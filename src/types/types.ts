@@ -23,3 +23,12 @@ export type FileNFT = {
 };
 
 export type NFT = MetadataNFT & FileNFT;
+
+type PinataNFT = MetadataNFT & {
+  image: string;
+};
+
+export type NFTPinataResponse = {
+  cid: string;
+  metadata: PinataNFT;
+};

@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
+import qs from "query-string";
 
 import { Address } from "abitype";
 import { MetadataNFT, NFT, TraitNFT } from "../types/types";
@@ -10,10 +11,8 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
 import { TransactionExecutionError } from "viem";
-import { BiSolidCopyAlt } from "react-icons/bi";
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
-import { NFTSchema } from "../schema/metadataNFTSchema";
 import Trait from "./Trait";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
@@ -21,6 +20,8 @@ import { config } from "../../config";
 import { newTrait } from "@/constants/constants";
 import Clipboard from "./Clipboard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { MintingContext } from "@/providers/MintingProvider";
 
 const initialMetadata: NFT = {
   description: "",
@@ -30,6 +31,10 @@ const initialMetadata: NFT = {
 };
 
 const AstroUploadForm = () => {
+  const router = useRouter();
+
+  const { setPinataResponse } = useContext(MintingContext)!;
+
   const nftFileRef = useRef<HTMLInputElement>(null);
   const { writeContractAsync: writeAstro, data: txHash } = useWriteAstroNft();
   const [nftFile, setNftFile] = useState<File | null>(null);
@@ -53,27 +58,20 @@ const AstroUploadForm = () => {
       const metadata: MetadataNFT = { ...values };
 
       data.append("metadata", JSON.stringify(metadata));
-      const metadataIpfsHash = await uploadToPinata(data);
+      const response = await uploadToPinata(data);
 
-      const mintAstro = writeAstro({
-        address: config.pubNftMarketAddress as Address,
-        functionName: "mint",
-        args: [metadataIpfsHash as string],
+      // const txHash = await writeAstro({
+      //   address: config.pubNftMarketAddress as Address,
+      //   functionName: "mint",
+      //   args: [response.cid],
+      // });
+
+      const url = qs.stringifyUrl({
+        url: `/nft/mint/0xT000001`,
       });
 
-      toast.promise(mintAstro, {
-        loading: `Please Sign or Reject "Mint Astro" Transaction on Metamask `,
-        success: (tx) => (
-          <p>
-            <b>{metadata.name}</b> Astro NFT Minted, <br />
-            at:{" "}
-            <b>
-              {tx.slice(0, 6)}...{tx.slice(tx.length - 6, tx.length)}
-            </b>
-          </p>
-        ),
-        error: (err: TransactionExecutionError) => `${err.shortMessage}`,
-      });
+      setPinataResponse(response);
+      router.push(url);
     } catch (error) {
       console.log({ error });
       if (error instanceof TransactionExecutionError) {
@@ -94,7 +92,7 @@ const AstroUploadForm = () => {
         <Formik
           initialValues={initialMetadata}
           onSubmit={handleSubmit}
-          validationSchema={NFTSchema}
+          // validationSchema={NFTSchema}
         >
           {({ values, setFieldValue, isSubmitting, isValid, dirty }) => {
             return (
