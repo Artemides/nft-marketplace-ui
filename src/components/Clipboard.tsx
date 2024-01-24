@@ -25,7 +25,7 @@ const Clipboard = ({
   return (
     <div
       className={twMerge(
-        `flex gap-x-2 text-green-400 bg-green-400/10 rounded-lg p-2 break-all`,
+        `flex justify-between gap-x-2 text-green-400 bg-green-400/10 rounded-lg p-2 break-all `,
         className
       )}
     >
@@ -34,7 +34,10 @@ const Clipboard = ({
         className={twMerge(`text-green-400`, btnClassName)}
         onClick={handleCopyToClipboard}
       >
-        <BiSolidCopyAlt size={21} className="text-green-400" />
+        <BiSolidCopyAlt
+          size={21}
+          className="text-green-400 hover:text-green-300"
+        />
       </button>
     </div>
   );

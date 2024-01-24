@@ -22,6 +22,7 @@ import Clipboard from "./Clipboard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MintingContext } from "@/providers/MintingProvider";
+import Modal from "./Modal";
 
 const initialMetadata: NFT = {
   description: "",
@@ -33,10 +34,14 @@ const initialMetadata: NFT = {
 const AstroUploadForm = () => {
   const router = useRouter();
 
-  const { setPinataResponse } = useContext(MintingContext)!;
+  const { setPinataResponse, setNftImage } = useContext(MintingContext)!;
 
   const nftFileRef = useRef<HTMLInputElement>(null);
-  const { writeContractAsync: writeAstro, data: txHash } = useWriteAstroNft();
+  const {
+    writeContractAsync: writeAstro,
+    data: txHash,
+    isSuccess,
+  } = useWriteAstroNft();
   const [nftFile, setNftFile] = useState<File | null>(null);
 
   const handleBrowseFile = () => {
@@ -71,6 +76,7 @@ const AstroUploadForm = () => {
       });
 
       setPinataResponse(response);
+      setNftImage(nftFile);
       router.push(url);
     } catch (error) {
       console.log({ error });
@@ -218,6 +224,9 @@ const AstroUploadForm = () => {
             </Link>
           </Clipboard>
         )}
+        <Modal isOpen={isSuccess}>
+          <h1>NFT Minted</h1>
+        </Modal>
       </div>
     </section>
   );
