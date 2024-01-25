@@ -25,7 +25,7 @@ const Clipboard = ({
   return (
     <div
       className={twMerge(
-        `flex justify-between gap-x-2 text-green-400 bg-green-400/10 rounded-lg p-2 break-all `,
+        `flex justify-between gap-x-2 text-green-400 bg-green-400/10 rounded-lg p-1 break-all `,
         className
       )}
     >

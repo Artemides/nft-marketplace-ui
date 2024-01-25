@@ -13,7 +13,7 @@ const Button = ({ text, className, ...props }: ButtonProps) => {
     <button
       {...props}
       className={twMerge(
-        "px-6 py-3 rounded-md font-medium bg-white text-black hover:opacity-90 transition",
+        "px-6 py-3 rounded-md font-medium bg-white text-black hover:opacity-90 transition ",
         className
       )}
     >

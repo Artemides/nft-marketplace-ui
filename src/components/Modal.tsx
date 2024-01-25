@@ -14,7 +14,7 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
     <Dialog.Root open={isOpen} onOpenChange={setOpen}>
       <Dialog.Portal>
         <Dialog.Overlay className="bg-neutral-900/50 backdrop-blur-sm  fixed inset-0" />
-        <Dialog.Content className="fixed  drop-shadow-sm border border-neutral-700  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-h-full h-full w-full md:h-auto md:max-h-[85%] md:w-[90vw] md:max-w-[450px] rounded-md bg-neutral-800 p-[25px] focus:outline-none">
+        <Dialog.Content className="fixed drop-shadow-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  rounded-md ">
           {children}
           <Dialog.DialogClose asChild>
             <button

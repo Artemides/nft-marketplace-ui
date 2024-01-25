@@ -23,6 +23,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MintingContext } from "@/providers/MintingProvider";
 import Modal from "./Modal";
+import AstroCard from "./AstroCard";
+import Button from "./Button";
 
 const initialMetadata: NFT = {
   description: "",
@@ -102,87 +104,115 @@ const AstroUploadForm = () => {
         >
           {({ values, setFieldValue, isSubmitting, isValid, dirty }) => {
             return (
-              <Form className="space-y-5">
-                <Input
-                  ref={nftFileRef}
-                  type="file"
-                  name="file"
-                  className="hidden"
-                  accept="image/*"
-                  value={""}
-                  onChange={(e) => {
-                    if (!e.currentTarget.files) return;
+              <>
+                <Form className="space-y-5">
+                  <Input
+                    ref={nftFileRef}
+                    type="file"
+                    name="file"
+                    className="hidden"
+                    accept="image/*"
+                    value={""}
+                    onChange={(e) => {
+                      if (!e.currentTarget.files) return;
 
-                    setFieldValue("file", e.currentTarget.files[0], true);
-                    setNftFile(e.currentTarget.files[0]);
-                  }}
-                  withMessage={false}
-                  disabled={isSubmitting}
-                />
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Name your NFT"
-                  label="Name: *"
-                  disabled={isSubmitting}
-                />
-                <Textarea
-                  name="description"
-                  placeholder="Describe your NFT"
-                  label="Description: *"
-                  className="resize-none scroll-w-0"
-                  rows={4}
-                  disabled={isSubmitting}
-                />
-                <div>
-                  <p className="font-semibold">Traits</p>
-                  <span className="text-neutral-300">
-                    Traits describe attributes of your item. They appear as
-                    filters inside your collection page and are also listed out
-                    inside your item page.
-                  </span>
-                  <FieldArray
-                    name="traits"
-                    render={({
-                      remove,
-                      push,
-                      replace,
-                    }: ArrayHelpers<TraitNFT[]>) => (
-                      <div className="my-2">
-                        <div className="grid grid-cols-1 gap-2">
-                          {values.traits?.map((trait, idx) => (
-                            <Trait
-                              key={idx}
-                              idx={idx}
-                              trait={trait}
-                              onDelete={remove}
-                              onEdit={replace}
-                              editing={!trait.type || !trait.value}
-                              disabled={isSubmitting}
-                            />
-                          ))}
-                        </div>
-                        <button
-                          type="button"
-                          className="font-semibold hover:text-neutral-400"
-                          onClick={() => {
-                            push(newTrait);
-                          }}
-                        >
-                          + Add trait
-                        </button>
-                      </div>
-                    )}
+                      setFieldValue("file", e.currentTarget.files[0], true);
+                      setNftFile(e.currentTarget.files[0]);
+                    }}
+                    withMessage={false}
+                    disabled={isSubmitting}
                   />
-                </div>
-                <button
-                  disabled={isSubmitting || !isValid || !dirty}
-                  type="submit"
-                  className="bg-orange-500 py-2 px-8 rounded-md text-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Create
-                </button>
-              </Form>
+                  <Input
+                    type="text"
+                    name="name"
+                    placeholder="Name your NFT"
+                    label="Name: *"
+                    disabled={isSubmitting}
+                  />
+                  <Textarea
+                    name="description"
+                    placeholder="Describe your NFT"
+                    label="Description: *"
+                    className="resize-none scroll-w-0"
+                    rows={4}
+                    disabled={isSubmitting}
+                  />
+                  <div>
+                    <p className="font-semibold">Traits</p>
+                    <span className="text-neutral-300">
+                      Traits describe attributes of your item. They appear as
+                      filters inside your collection page and are also listed
+                      out inside your item page.
+                    </span>
+                    <FieldArray
+                      name="traits"
+                      render={({
+                        remove,
+                        push,
+                        replace,
+                      }: ArrayHelpers<TraitNFT[]>) => (
+                        <div className="my-2">
+                          <div className="grid grid-cols-1 gap-2">
+                            {values.traits?.map((trait, idx) => (
+                              <Trait
+                                key={idx}
+                                idx={idx}
+                                trait={trait}
+                                onDelete={remove}
+                                onEdit={replace}
+                                editing={!trait.type || !trait.value}
+                                disabled={isSubmitting}
+                              />
+                            ))}
+                          </div>
+                          <button
+                            type="button"
+                            className="font-semibold hover:text-neutral-400"
+                            onClick={() => {
+                              push(newTrait);
+                            }}
+                          >
+                            + Add trait
+                          </button>
+                        </div>
+                      )}
+                    />
+                  </div>
+                  <button
+                    disabled={isSubmitting || !isValid || !dirty}
+                    type="submit"
+                    className="bg-orange-500 py-2 px-8 rounded-md text-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Create
+                  </button>
+                </Form>
+                <Modal isOpen={Boolean(nftFile)}>
+                  <AstroCard
+                    image={nftFile ? URL.createObjectURL(nftFile) : ""}
+                    imageDescripion={"image"}
+                  >
+                    <div className="space-y-[4px]">
+                      <h2 className="font-semibold first-letter:uppercase">
+                        {values.name}
+                      </h2>
+                      <p className="font-thin">{values.description}</p>
+                      <p>Transaction at:</p>
+                      <Clipboard copy={txHash || ""}>
+                        <p className="break-all font-thin">
+                          <b>{txHash} 0xT000001</b>
+                        </p>
+                      </Clipboard>
+                      <div className="flex gap-x-2 font-medium">
+                        <Button
+                          text="List on Market"
+                          className="bg-orange-500 text-white"
+                        ></Button>
+                        <Button text="Gallery"></Button>
+                      </div>
+                    </div>
+                  </AstroCard>
+                </Modal>
+              </>
             );
           }}
         </Formik>
@@ -224,9 +254,6 @@ const AstroUploadForm = () => {
             </Link>
           </Clipboard>
         )}
-        <Modal isOpen={isSuccess}>
-          <h1>NFT Minted</h1>
-        </Modal>
       </div>
     </section>
   );
