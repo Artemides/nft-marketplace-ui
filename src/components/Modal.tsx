@@ -5,13 +5,17 @@ import { IoMdClose } from "react-icons/io";
 type ModalProps = {
   children?: ReactNode;
   isOpen: boolean;
+  onClose?: () => void;
 };
 
-const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
-  const [open, setOpen] = useState(isOpen);
-
+const Modal: React.FC<ModalProps> = ({ children, isOpen, onClose }) => {
   return (
-    <Dialog.Root open={isOpen} onOpenChange={setOpen}>
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={() => {
+        onClose && onClose();
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="bg-neutral-900/50 backdrop-blur-sm  fixed inset-0" />
         <Dialog.Content className="fixed drop-shadow-sm top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  rounded-md ">
