@@ -160,10 +160,7 @@ const AstroUploadForm = () => {
                             <Trait
                               key={idx}
                               idx={idx}
-                              trait={trait}
                               onDelete={remove}
-                              onEdit={replace}
-                              editing={!trait.type || !trait.value}
                               disabled={isSubmitting}
                             />
                           ))}
