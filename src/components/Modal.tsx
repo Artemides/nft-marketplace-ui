@@ -18,7 +18,7 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen }) => {
           {children}
           <Dialog.DialogClose asChild>
             <button
-              className="text-neutral-400 hover:text-white absolute top-[10px] right-[10px] inline-flex w-[25px] h-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
+              className="text-neutral-300 hover:text-white absolute top-[10px] right-[10px] inline-flex w-[25px] h-[25px] appearance-none items-center justify-center rounded-full focus:outline-none"
               aria-label="Close"
             >
               <IoMdClose />

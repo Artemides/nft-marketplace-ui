@@ -19,12 +19,11 @@ import { useWriteAstroNft } from "@/nftMarketHooks";
 import { config } from "../../config";
 import { newTrait } from "@/constants/constants";
 import Clipboard from "./Clipboard";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MintingContext } from "@/providers/MintingProvider";
 import Modal from "./Modal";
 import AstroCard from "./AstroCard";
 import Button from "./Button";
+import { NFTSchema } from "@/schema/metadataNFTSchema";
 
 const initialMetadata: NFT = {
   description: "",
@@ -34,10 +33,6 @@ const initialMetadata: NFT = {
 };
 
 const AstroUploadForm = () => {
-  const router = useRouter();
-
-  const { setPinataResponse, setNftImage } = useContext(MintingContext)!;
-
   const nftFileRef = useRef<HTMLInputElement>(null);
   const {
     writeContractAsync: writeAstro,
@@ -72,14 +67,6 @@ const AstroUploadForm = () => {
       //   functionName: "mint",
       //   args: [response.cid],
       // });
-
-      const url = qs.stringifyUrl({
-        url: `/nft/mint/0xT000001`,
-      });
-
-      setPinataResponse(response);
-      setNftImage(nftFile);
-      router.push(url);
     } catch (error) {
       console.log({ error });
       if (error instanceof TransactionExecutionError) {
@@ -100,7 +87,7 @@ const AstroUploadForm = () => {
         <Formik
           initialValues={initialMetadata}
           onSubmit={handleSubmit}
-          // validationSchema={NFTSchema}
+          validationSchema={NFTSchema}
         >
           {({ values, setFieldValue, isSubmitting, isValid, dirty }) => {
             return (
@@ -196,18 +183,20 @@ const AstroUploadForm = () => {
                         {values.name}
                       </h2>
                       <p className="font-thin">{values.description}</p>
-                      <p>Transaction at:</p>
-                      <Clipboard copy={txHash || ""}>
-                        <p className="break-all font-thin">
-                          <b>{txHash} 0xT000001</b>
-                        </p>
-                      </Clipboard>
+                      <div>
+                        <p>Transaction at:</p>
+                        <Clipboard copy={txHash || ""}>
+                          <p className="break-all font-thin">
+                            <b>{txHash} </b>
+                          </p>
+                        </Clipboard>
+                      </div>
                       <div className="flex gap-x-2 font-medium">
                         <Button
                           text="List on Market"
-                          className="bg-orange-500 text-white"
-                        ></Button>
-                        <Button text="Gallery"></Button>
+                          className="bg-orange-500 text-white "
+                        />
+                        <Button text="Gallery" />
                       </div>
                     </div>
                   </AstroCard>
@@ -220,7 +209,7 @@ const AstroUploadForm = () => {
       <div className="p-2 ">
         <div
           className={twMerge(
-            `relative overflow-hidden aspect-square flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
+            `relative overflow-hidden aspect-1 flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
             !nftFile && " border border-neutral-500 border-dashed"
           )}
           onClick={handleBrowseFile}
@@ -247,13 +236,6 @@ const AstroUploadForm = () => {
             </>
           )}
         </div>
-        {txHash && (
-          <Clipboard copy={txHash} className="mt-2">
-            <Link href={"/"}>
-              Transaction: <b>{txHash}</b>
-            </Link>
-          </Clipboard>
-        )}
       </div>
     </section>
   );
