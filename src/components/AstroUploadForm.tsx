@@ -3,27 +3,24 @@
 import { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrayHelpers, FieldArray, Form, Formik, FormikHelpers } from "formik";
-import qs from "query-string";
 
-import { Address } from "abitype";
 import { MetadataNFT, NFT, TraitNFT } from "../types/types";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import toast from "react-hot-toast";
-import { TransactionExecutionError } from "viem";
+import { Address, TransactionExecutionError } from "viem";
 import Input from "./Form/Input";
 import Textarea from "./Form/Textarea";
 import Trait from "./Trait";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
-import { config } from "../../config";
 import { newTrait } from "@/constants/constants";
 import Clipboard from "./Clipboard";
-import { useRouter } from "next/navigation";
 import Modal from "./Modal";
 import AstroCard from "./AstroCard";
 import Button from "./Button";
 import { NFTSchema } from "@/schema/metadataNFTSchema";
+import { config } from "../../config";
 
 const initialMetadata: NFT = {
   description: "",
@@ -61,12 +58,24 @@ const AstroUploadForm = () => {
 
       data.append("metadata", JSON.stringify(metadata));
       const response = await uploadToPinata(data);
+      const txHash = await writeAstro({
+        address: config.pubNftMarketAddress as Address,
+        functionName: "mint",
+        args: [response.cid],
+      });
 
-      // const txHash = await writeAstro({
-      //   address: config.pubNftMarketAddress as Address,
-      //   functionName: "mint",
-      //   args: [response.cid],
-      // });
+      toast.promise(
+        writeAstro({
+          address: config.pubNftMarketAddress as Address,
+          functionName: "mint",
+          args: [response.cid],
+        }),
+        {
+          loading: `Minting ${response.metadata.name}`,
+          success: "Your NFT has been mintent Successfully",
+          error: "Error Minting your NFT",
+        }
+      );
     } catch (error) {
       console.log({ error });
       if (error instanceof TransactionExecutionError) {
@@ -173,7 +182,7 @@ const AstroUploadForm = () => {
                     Create
                   </button>
                 </Form>
-                <Modal isOpen={Boolean(nftFile)}>
+                <Modal isOpen={isSuccess}>
                   <AstroCard
                     image={nftFile ? URL.createObjectURL(nftFile) : ""}
                     imageDescripion={"image"}
