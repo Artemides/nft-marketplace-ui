@@ -50,7 +50,11 @@ export const ConnectWalletButton = () => {
         message: message.prepareMessage(),
       });
 
-      await signIn("credentials", { message, signature, redirect: false });
+      await signIn("credentials", {
+        message: JSON.stringify(message),
+        signature,
+        redirect: false,
+      });
     } catch (error) {
       toast.custom((t) => (
         <CustomToast
