@@ -149,11 +149,7 @@ const AstroUploadForm = () => {
                   </span>
                   <FieldArray
                     name="traits"
-                    render={({
-                      remove,
-                      push,
-                      replace,
-                    }: ArrayHelpers<TraitNFT[]>) => (
+                    render={({ remove, push }: ArrayHelpers<TraitNFT[]>) => (
                       <div className="my-2">
                         <div className="grid grid-cols-1 gap-2">
                           {values.traits?.map((trait, idx) => (

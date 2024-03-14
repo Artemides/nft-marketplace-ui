@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Wagmi from "@/providers/Wagmi";
 import ToasterProvider from "../../old/providers/ToasterProvider";
 import { Navbar } from "@/components/Navbar";
+import AppProvider from "@/providers/AppProvider";
 
 const titillium = Titillium_Web({
   subsets: ["latin"],
@@ -30,11 +31,10 @@ export default function RootLayout({
           " bg-gradient-to-b from-black to-[#090618] text-white"
         }
       >
-        <Wagmi>
-          <ToasterProvider />
+        <AppProvider>
           <Navbar />
           <div className="min-h-[calc(100vh-72px)]">{children}</div>
-        </Wagmi>
+        </AppProvider>
       </body>
     </html>
   );

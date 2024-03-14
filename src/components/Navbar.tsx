@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { ConnectWalletButton } from "./ConnectWalletButton";
+import { ConnectWalletButton } from "./ConnectWallet";
 
 type NFTRoute = {
   name: string;
