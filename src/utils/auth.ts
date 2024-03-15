@@ -46,7 +46,7 @@ export const authConfig = {
           const result = await siwe.verify({
             signature: credentials?.signature || "",
             domain: nextAuthURL.host,
-            nonce: await getCsrfToken({ req }),
+            nonce: await getCsrfToken({ req: { headers: req.headers } }),
           });
           if (result.success) {
             return {
@@ -65,7 +65,7 @@ export const authConfig = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (token) {
         session.address = token.sub || "";
         session.user.name = token.sub;
