@@ -20,7 +20,7 @@ import MetamaskSVG from "../../public/images/icons/metamask-icon.svg";
 import { SiweMessage } from "siwe";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
 import CustomToast from "./CustomToast";
-import { BiLogIn, BiUserCircle } from "react-icons/bi";
+import { BiLogIn, BiLogOut, BiUserCircle } from "react-icons/bi";
 import { MdLogin } from "react-icons/md";
 export const ConnectWalletButton = () => {
   const { isPending, connect, connectors } = useConnect();
@@ -75,14 +75,18 @@ export const ConnectWalletButton = () => {
   return (
     <>
       {isConnected && session && address && (
-        <div className="flex items-center justify-between gap-2 rounded-full text-sm py-1 px-6 ">
+        <div className="flex items-center justify-between gap-2 text-sm py-1 ">
           {ensAvatar && <Image src={ensAvatar} alt={`${address}`} />}
-          <span className="font-medium">{`${address.slice(
+          <span className="font-semibold text-green-500">{`${address.slice(
             0,
             10
           )}...${address.slice(-6)}`}</span>
-          <IconButton loading={isPending} onClick={() => disconnect()}>
-            <PiPlugsConnectedBold size={24} className="text-green-500" />
+          <IconButton
+            loading={isPending}
+            onClick={() => disconnect()}
+            className="bg-white text-black rounded-md flex"
+          >
+            <BiLogOut size={21} />
           </IconButton>
         </div>
       )}

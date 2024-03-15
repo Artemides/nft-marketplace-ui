@@ -9,7 +9,7 @@ import AppProvider from "@/providers/AppProvider";
 
 const titillium = Titillium_Web({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "700", "900"],
+  weight: ["200", "300", "400", "600", "700", "900"],
 });
 
 export const metadata: Metadata = {
