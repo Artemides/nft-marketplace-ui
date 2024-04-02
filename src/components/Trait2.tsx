@@ -37,6 +37,7 @@ const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
                     {...field}
                     placeholder="Trait"
                     className={error && "ring-1 ring-red-500"}
+                    disabled={disabled}
                   />
                 </FormControl>
                 <FormMessage />
@@ -53,6 +54,7 @@ const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
                     {...field}
                     placeholder="Value"
                     className={error && "ring-1 ring-red-500"}
+                    disabled={disabled}
                   />
                 </FormControl>
                 <FormMessage />

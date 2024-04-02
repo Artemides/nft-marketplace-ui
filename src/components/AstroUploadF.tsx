@@ -1,6 +1,7 @@
-import { NFT } from "@/types/types";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { NFT } from "@/types/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -12,11 +13,24 @@ import {
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import Trait from "./Trait2";
-import { newTrait } from "@/constants/constants";
 import { Button } from "./ui/button";
 
+import { newTrait } from "@/constants/constants";
+import { NFTForm } from "@/schema/nft";
+
+const initialMetadata: NFT = {
+  description: "",
+  name: "",
+  traits: [],
+  file: null,
+};
+
 const AstroUploadF = () => {
-  const form = useForm<NFT>();
+  const form = useForm<NFT>({
+    defaultValues: initialMetadata,
+    resolver: zodResolver(NFTForm),
+    mode: "all",
+  });
   const {
     append,
     fields: traits,
@@ -25,6 +39,10 @@ const AstroUploadF = () => {
     control: form.control,
     name: "traits",
   });
+
+  const { isSubmitting, isDirty, isValid } = form.formState;
+
+  const unableToSubmit = isSubmitting || !isValid || !isDirty;
 
   return (
     <section id="upload-nft" className="grid grid-cols-2 gap-x-12 pl-8">
@@ -41,7 +59,11 @@ const AstroUploadF = () => {
                     <Input
                       {...field}
                       placeholder="Astro NFT name"
-                      className={error && "ring-1 ring-red-500"}
+                      className={
+                        error && "border-red-500 focus-visible:border-red-500"
+                      }
+                      maxLength={30}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -60,8 +82,12 @@ const AstroUploadF = () => {
                     <Textarea
                       {...field}
                       placeholder="Describe your NFT"
-                      className={error && "ring-1 ring-red-500"}
+                      className={
+                        error && "border-red-500 focus-visible:border-red-500"
+                      }
                       rows={4}
+                      maxLength={150}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormMessage />
@@ -82,6 +108,7 @@ const AstroUploadF = () => {
                     control={form.control}
                     idx={idx}
                     onDelete={remove}
+                    disabled={isSubmitting}
                   />
                 ))}
                 <Button
@@ -96,6 +123,13 @@ const AstroUploadF = () => {
                   + Add trait
                 </Button>
               </div>
+              <Button
+                disabled={unableToSubmit}
+                type="submit"
+                className="font-semibold"
+              >
+                Create
+              </Button>
             </div>
           </form>
         </Form>
