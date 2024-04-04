@@ -2,9 +2,9 @@ import { MetadataNFT } from "@/types/types";
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/utils/constants";
 import { z } from "zod";
 
-type TraitValueType = number | string | Date;
+type TraitValueType = "number" | "string" | "date";
 
-type NFTTrait = {
+export type NFTTrait = {
   type: string;
   value: string;
   valueType?: TraitValueType;
@@ -16,17 +16,23 @@ type NFTBaseMetadata = {
   traits?: NFTTrait[];
 };
 
-type NFTMetadata = NFTBaseMetadata & {
-  tokenURI: string;
+export type NFTMetadata = NFTBaseMetadata & {
+  image: string;
 };
 
 type NFTFile = {
-  file: File;
+  file: File | null;
 };
 
 export const NFTTraits: z.ZodType<NFTTrait> = z.object({
-  type: z.string().max(25),
-  value: z.string().max(15),
+  type: z
+    .string()
+    .min(1, `Trait "type" required`)
+    .max(25, `Trait "type" too long`),
+  value: z
+    .string()
+    .min(1, `Trait "value" required`)
+    .max(25, `Trait "value" too long`),
   valueType: z.enum(["string", "number", "date"]).optional(),
 });
 

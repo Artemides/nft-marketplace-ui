@@ -1,3 +1,4 @@
+import AstroUploadF from "./AstroUploadF";
 import AstroUploadForm from "./AstroUploadForm";
 
 const AstroUpload = () => {
@@ -11,7 +12,7 @@ const AstroUpload = () => {
           information.
         </p>
       </div>
-      <AstroUploadForm />
+      <AstroUploadF />
     </div>
   );
 };

@@ -21,7 +21,7 @@ import AstroCard from "./AstroCard";
 import Button from "./Button";
 import { NFTSchema } from "@/schema/metadataNFTSchema";
 import { config } from "../../config";
-import AstroUploadF from "./AstroUploadF";
+import AstroUploadF from "./AstroUploadF.1";
 
 const initialMetadata: NFT = {
   description: "",
@@ -63,6 +63,7 @@ const AstroUploadForm = () => {
       if (values.file) {
         data.append("file", values.file, values.file.name);
       }
+
       const metadata: MetadataNFT = { ...values };
 
       data.append("metadata", JSON.stringify(metadata));
@@ -191,7 +192,7 @@ const AstroUploadForm = () => {
         <div className="p-2 ">
           <div
             className={twMerge(
-              `relative overflow-hidden aspect-1 flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
+              `relative overflow-hidden aspect-square flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
               !nftFile && " border border-neutral-500 border-dashed"
             )}
             onClick={handleBrowseFile}
@@ -250,9 +251,6 @@ const AstroUploadForm = () => {
             </div>
           </AstroCard>
         </Modal>
-      </section>
-      <section>
-        <AstroUploadF />
       </section>
     </>
   );

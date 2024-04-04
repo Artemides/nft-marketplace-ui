@@ -1,36 +1,36 @@
 "use server";
 
-import { fileNFTSchema, metadataNFTSchema } from "@/schema/metadataNFTSchema";
-import { NFTPinataResponse } from "@/types/types";
-import * as Yup from "yup";
+import { handleActionError } from "@/lib/errors";
+import { NFTBaseMetadata, NFTFile, NFTMetadata } from "@/schema/nft";
+import { NFTFormActionState } from "@/types/actions";
+import { NFTForm } from "@/types/forms";
 
 export const uploadToPinata = async (
+  // _: NFTFormActionState,
   formdata: FormData
-): Promise<NFTPinataResponse> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const file = formdata.get("file") as File;
-      const body = JSON.parse(formdata.get("metadata") as string);
-      await metadataNFTSchema.validate(body, { abortEarly: false });
-      if (!file) reject("Please Update an image File");
+): Promise<NFTFormActionState> => {
+  try {
+    const traits = JSON.parse(formdata.get("traits") as string);
+    const entries = Object.fromEntries(formdata);
+    delete entries["traits"];
+    if (traits) entries["traits"] = traits;
 
-      await fileNFTSchema.validate({ file });
+    const baseMetadata = NFTBaseMetadata.parse(entries);
+    const file = NFTFile.parse(entries);
 
-      // const { IpfsHash } = await saveFile(_files.file);
-      const IpfsHash = "0xIpfsHashFile";
-      const metadata = {
-        ...body,
-        image: `ipfs://${IpfsHash}`,
-      };
-      // const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
-      const cid = "0xIpfsHashFile";
-      resolve({ cid, metadata });
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Yup.ValidationError) {
-        reject(error.message);
-      }
-      reject("Internal Server Error");
-    }
-  });
+    // const { IpfsHash } = await saveFile(file);
+    const IpfsHash = "0xIpfsHashFile";
+    const metadata: NFTMetadata = {
+      ...baseMetadata,
+      image: `ipfs://${IpfsHash}`,
+    };
+    // const { IpfsHash: metadataIpfsHash } = await saveJSON(body);
+    const tokenURI = "0xIpfsHashFile";
+
+    return { status: "success", tokenURI, metadata };
+  } catch (error) {
+    const err = handleActionError<NFTForm>(error);
+    console.error({ err });
+    return err;
+  }
 };

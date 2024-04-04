@@ -8,17 +8,26 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Control } from "react-hook-form";
-import { NFT } from "@/types/types";
 import { Input } from "./ui/input";
+import React from "react";
+import { z } from "zod";
+import { NFTForm } from "@/schema/nft";
+
+type TNFTForm = z.infer<typeof NFTForm>;
 
 type TraitProps = {
   idx: number;
   onDelete: (idx: number) => void;
   disabled?: boolean;
-  control: Control<NFT, any>;
+  control: Control<TNFTForm, any>;
 };
 
-const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
+export const Trait: React.FC<TraitProps> = ({
+  idx,
+  onDelete,
+  disabled,
+  control,
+}) => {
   const handleDeleteTrait = () => {
     onDelete(idx);
   };
@@ -36,8 +45,11 @@ const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
                   <Input
                     {...field}
                     placeholder="Trait"
-                    className={error && "ring-1 ring-red-500"}
+                    className={
+                      error && "border-red-500 focus-visible:border-red-500"
+                    }
                     disabled={disabled}
+                    maxLength={25}
                   />
                 </FormControl>
                 <FormMessage />
@@ -53,8 +65,31 @@ const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
                   <Input
                     {...field}
                     placeholder="Value"
-                    className={error && "ring-1 ring-red-500"}
+                    className={
+                      error && "border-red-500 focus-visible:border-red-500"
+                    }
                     disabled={disabled}
+                    maxLength={25}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name={`traits.${idx}.valueType`}
+            render={({ field, fieldState: { error } }) => (
+              <FormItem className="hidden">
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="valueType"
+                    className={
+                      error && "border-red-500 focus-visible:border-red-500 "
+                    }
+                    disabled={disabled}
+                    maxLength={25}
                   />
                 </FormControl>
                 <FormMessage />
@@ -76,5 +111,3 @@ const Trait: React.FC<TraitProps> = ({ idx, onDelete, disabled, control }) => {
     </div>
   );
 };
-
-export default Trait;

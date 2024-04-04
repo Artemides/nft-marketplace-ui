@@ -1,1 +1,3 @@
-export const newTrait = { type: "", value: "" };
+import { NFTTrait } from "@/schema/nft";
+
+export const newTrait: NFTTrait = { type: "", value: "", valueType: "string" };
