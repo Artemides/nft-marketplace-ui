@@ -1,36 +1,29 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { memo, useEffect, useMemo, useRef } from "react";
+import { Address, ProviderRpcError, TransactionExecutionError } from "viem";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import toast from "react-hot-toast";
+import Image from "next/image";
+import { z } from "zod";
+
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Trait } from "./Trait2";
 import { Button } from "./ui/button";
 
+import Modal from "./Modal";
+import { Trait } from "./Trait2";
 import { newTrait } from "@/constants/constants";
 import { NFTForm as NFTFormSchema } from "@/schema/nft";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { z } from "zod";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
-import toast from "react-hot-toast";
 import { config } from "../../config";
-import { Address, TransactionExecutionError } from "viem";
-import Modal from "./Modal";
 import AstroCard from "./AstroCard";
 import Clipboard from "./Clipboard";
-import { useFormState } from "react-dom";
 import SubmitButton from "@/app/nft/mint/_components/SubmitButton";
 
 type NFTForm = z.infer<typeof NFTFormSchema>;
@@ -49,6 +42,7 @@ const AstroUploadF = () => {
     resolver: zodResolver(NFTFormSchema),
     mode: "all",
   });
+
   const {
     append,
     fields: traits,
@@ -56,14 +50,15 @@ const AstroUploadF = () => {
   } = useFieldArray({
     control: form.control,
     name: "traits",
-
     shouldUnregister: true,
   });
+
   const {
     writeContractAsync: writeAstro,
     data: txHash,
     isSuccess,
     reset: astroReset,
+    isPending,
   } = useWriteAstroNft();
 
   // const [formActionState, onFormAction] = useFormState(uploadToPinata, {
@@ -72,14 +67,15 @@ const AstroUploadF = () => {
   //derive
 
   const { isSubmitting, isDirty, isValid } = form.formState;
-  const unableToSubmit = isSubmitting || !isValid || !isDirty;
+  const unableToSubmit = isPending || isSubmitting || !isValid || !isDirty;
 
-  const NFTName = form.getValues("name");
-  const NFTDescription = form.getValues("description");
-  const NFTFile = form.getValues("file");
-  const NFTImageURI = NFTFile ? URL.createObjectURL(NFTFile) : null;
+  const { file, description, name } = form.getValues();
 
-  // console.log({ NFTImageURI });
+  const imageURI = useMemo(() => {
+    return file ? URL.createObjectURL(file) : null;
+  }, [file]);
+
+  // console.log({ imageURI });
   //event handlers
 
   const handleBrowseFile = () => {
@@ -96,16 +92,32 @@ const AstroUploadF = () => {
   const handleAction = async () => {
     try {
       const formData = new FormData();
-      formData.append("name", NFTName);
-      formData.append("description", NFTDescription);
-      formData.append("file", NFTFile!);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("file", file!);
       const traits = form.getValues("traits");
       if (traits && traits.length > 0) {
         formData.append("traits", JSON.stringify(traits));
       }
 
-      const { status, tokenURI, metadata } = await uploadToPinata(formData);
-      if (status === "error") return;
+      const { status, tokenURI, metadata, formError, errors } = await uploadToPinata(formData);
+      if (status === "error") {
+        if (errors) {
+          toast.error(errors, { style: { color: "#fa594d" } });
+          return;
+        }
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            if (!formError) return;
+            const message = formError[key as keyof NFTForm];
+            form.setError(key as keyof NFTForm, {
+              message,
+            });
+          });
+          return;
+        }
+        return;
+      }
 
       toast.promise(
         writeAstro({
@@ -116,64 +128,14 @@ const AstroUploadF = () => {
         {
           loading: `Minting ${metadata!.name}`,
           success: "Your NFT has been mintent Successfully",
-          error: "Error Minting your NFT",
+          error: (err: ProviderRpcError) => err.shortMessage,
         }
       );
     } catch (error) {
       console.error({ error });
-      if (error instanceof TransactionExecutionError) {
-        toast.error(error.shortMessage, { style: { color: "#fa594d" } });
-      }
-      if (error instanceof Error)
-        toast.error(error.message, { style: { color: "#fa594d" } });
+      if (error instanceof Error) toast.error(error.message, { style: { color: "#fa594d" } });
     }
   };
-
-  // useEffect(() => {
-  //   const { tokenURI, metadata, status } = formActionState;
-  //   if (status !== "success" || !tokenURI || !metadata) return;
-  //   return;
-
-  //   console.log({ status });
-  //   try {
-  //     toast.promise(
-  //       writeAstro({
-  //         address: config.pubNftMarketAddress as Address,
-  //         functionName: "mint",
-  //         args: [tokenURI],
-  //       }),
-  //       {
-  //         loading: `Minting ${metadata.name}`,
-  //         success: "Your NFT has been mintent Successfully",
-  //         error: "Error Minting your NFT",
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error({ error });
-  //     if (error instanceof TransactionExecutionError) {
-  //       toast.error(error.shortMessage, { style: { color: "#fa594d" } });
-  //     }
-  //   }
-  // }, [astroReset, formActionState, writeAstro]);
-
-  // useEffect(() => {
-  //   const { status, errors, formError } = formActionState;
-
-  //   if (status !== "error") return;
-  //   if (errors) {
-  //     toast.error(errors, { style: { color: "#fa594d" } });
-  //     return;
-  //   }
-  //   if (formError) {
-  //     Object.keys(formError).forEach((key) => {
-  //       if (!formError) return;
-  //       const message = formError[key as keyof NFTForm];
-  //       form.setError(key as keyof NFTForm, {
-  //         message,
-  //       });
-  //     });
-  //   }
-  // }, [form, formActionState]);
 
   return (
     <section id="upload-nft" className="grid grid-cols-2 gap-x-12 pl-8">
@@ -204,9 +166,7 @@ const AstroUploadF = () => {
                     <Input
                       {...field}
                       placeholder="Astro NFT name"
-                      className={
-                        error && "border-red-500 focus-visible:border-red-500"
-                      }
+                      className={error && "border-red-500 focus-visible:border-red-500"}
                       maxLength={30}
                       disabled={isSubmitting}
                     />
@@ -220,16 +180,12 @@ const AstroUploadF = () => {
               name="description"
               render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">
-                    Description: *
-                  </FormLabel>
+                  <FormLabel className="font-semibold">Description: *</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
                       placeholder="Describe your NFT"
-                      className={
-                        error && "border-red-500 focus-visible:border-red-500"
-                      }
+                      className={error && "border-red-500 focus-visible:border-red-500"}
                       rows={4}
                       maxLength={150}
                       disabled={isSubmitting}
@@ -242,9 +198,8 @@ const AstroUploadF = () => {
             <div>
               <p className="font-semibold">Traits</p>
               <span className="text-neutral-300">
-                Traits describe attributes of your item. They appear as filters
-                inside your collection page and are also listed out inside your
-                item page.
+                Traits describe attributes of your item. They appear as filters inside your
+                collection page and are also listed out inside your item page.
               </span>
               <div className="my-2 space-y-2">
                 {traits.map((trait, idx) => (
@@ -278,13 +233,13 @@ const AstroUploadF = () => {
         <div
           className={cn(
             `relative overflow-hidden aspect-1 flex flex-col items-center justify-center rounded-lg hover:bg-neutral-500/10 hover:cursor-pointer transition`,
-            !NFTFile && " border border-neutral-500 border-dashed"
+            !file && " border border-neutral-500 border-dashed"
           )}
           onClick={handleBrowseFile}
         >
-          {NFTImageURI ? (
+          {imageURI ? (
             <Image
-              src={NFTImageURI}
+              src={imageURI}
               fill
               className="object-cover hover:opacity-80 transition"
               alt={"your nft image"}
@@ -293,9 +248,7 @@ const AstroUploadF = () => {
             <>
               <MdOutlineFileUpload size={40} />
               <p className="text-xs  text-center">
-                <span className="font-semibold text-sky-500 text-sm ">
-                  Browse files
-                </span>
+                <span className="font-semibold text-sky-500 text-sm ">Browse files</span>
                 <br />
                 Max size: 50MB
                 <br />
@@ -306,10 +259,10 @@ const AstroUploadF = () => {
         </div>
       </div>
       <Modal isOpen={isSuccess} onClose={handleContractReset}>
-        <AstroCard image={NFTImageURI} imageDescripion={"image"}>
+        <AstroCard image={imageURI} imageDescripion={"image"}>
           <div className="space-y-[4px]">
-            <h2 className="font-semibold first-letter:uppercase">{NFTName}</h2>
-            <p className="font-thin">{NFTDescription}</p>
+            <h2 className="font-semibold first-letter:uppercase">{name}</h2>
+            <p className="font-thin">{description}</p>
             <div>
               <p>Transaction at:</p>
               <Clipboard copy={txHash || ""}>
