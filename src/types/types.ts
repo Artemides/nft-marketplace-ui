@@ -1,34 +1,26 @@
-import formidable from "formidable";
+import { z } from "zod";
+import { NFTForm as NFTFormSchema } from "../schema/nft";
 
-export type ValueType = number | string | Date;
+type TraitValueType = "number" | "string" | "date";
 
-export type TraitNFT = {
+export type NFTTrait = {
   type: string;
   value: string;
-  valueType?: ValueType;
+  valueType?: TraitValueType;
 };
 
-export type MetadataNFT = {
+export type NFTBaseMetadata = {
   name: string;
   description: string;
-  traits?: TraitNFT[];
+  traits?: NFTTrait[];
 };
 
-export type MetadataNFTFiles = {
-  file: formidable.File;
-};
-
-export type FileNFT = {
-  file: File | null;
-};
-
-export type NFT = MetadataNFT & FileNFT;
-
-type PinataNFT = MetadataNFT & {
+export type NFTMetadata = NFTBaseMetadata & {
   image: string;
 };
 
-export type NFTPinataResponse = {
-  cid: string;
-  metadata: PinataNFT;
+export type NFTFile = {
+  file: File | null;
 };
+
+type NFTForm = z.infer<typeof NFTFormSchema>;

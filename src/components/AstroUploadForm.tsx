@@ -25,8 +25,8 @@ import { config } from "../../config";
 import AstroCard from "./AstroCard";
 import Clipboard from "./Clipboard";
 import SubmitButton from "@/app/nft/mint/_components/SubmitButton";
+import { NFTForm } from "@/types/forms";
 
-type NFTForm = z.infer<typeof NFTFormSchema>;
 const initialMetadata: NFTForm = {
   description: "",
   name: "",

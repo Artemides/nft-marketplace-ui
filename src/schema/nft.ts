@@ -1,42 +1,14 @@
-import { MetadataNFT } from "@/types/types";
+import { NFTBaseMetadata as TNFTBaseMetadata, NFTFile as TNFTFile, NFTTrait } from "@/types/types";
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/utils/constants";
 import { z } from "zod";
 
-type TraitValueType = "number" | "string" | "date";
-
-export type NFTTrait = {
-  type: string;
-  value: string;
-  valueType?: TraitValueType;
-};
-
-type NFTBaseMetadata = {
-  name: string;
-  description: string;
-  traits?: NFTTrait[];
-};
-
-export type NFTMetadata = NFTBaseMetadata & {
-  image: string;
-};
-
-type NFTFile = {
-  file: File | null;
-};
-
 export const NFTTraits: z.ZodType<NFTTrait> = z.object({
-  type: z
-    .string()
-    .min(1, `Trait "type" required`)
-    .max(25, `Trait "type" too long`),
-  value: z
-    .string()
-    .min(1, `Trait "value" required`)
-    .max(25, `Trait "value" too long`),
+  type: z.string().min(1, `Trait "type" required`).max(25, `Trait "type" too long`),
+  value: z.string().min(1, `Trait "value" required`).max(25, `Trait "value" too long`),
   valueType: z.enum(["string", "number", "date"]).optional(),
 });
 
-export const NFTBaseMetadata: z.ZodType<NFTBaseMetadata> = z.object({
+export const NFTBaseMetadata: z.ZodType<TNFTBaseMetadata> = z.object({
   name: z
     .string()
     .trim()
@@ -50,7 +22,7 @@ export const NFTBaseMetadata: z.ZodType<NFTBaseMetadata> = z.object({
   traits: NFTTraits.array().optional(),
 });
 
-export const NFTFile: z.ZodType<NFTFile> = z.object({
+export const NFTFile: z.ZodType<TNFTFile> = z.object({
   file: z.custom<File>().superRefine((file, ctx) => {
     if (!file || !file.size) {
       ctx.addIssue({
