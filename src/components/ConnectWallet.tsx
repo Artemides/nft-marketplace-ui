@@ -11,7 +11,6 @@ import {
   useDisconnect,
   useEnsAvatar,
   useSignMessage,
-  useAccountEffect,
 } from "wagmi";
 import { IconButton } from "./IconButton";
 import toast from "react-hot-toast";
