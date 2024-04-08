@@ -1,5 +1,4 @@
-import Button from "@/components/Button";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -13,10 +12,9 @@ export default function Home() {
             Effortless NFT Creation on any chain
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Button
-              text="Get Started"
-              className="rounded-md bg-orange-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            />
+            <Button className="px-3.5 py-2.5 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Get Started
+            </Button>
           </div>
         </div>
       </div>
