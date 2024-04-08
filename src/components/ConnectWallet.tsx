@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import Image from "next/image";
 
-import { PiPlugsConnectedBold, PiPlugsBold } from "react-icons/pi";
 import {
   Connector,
   CreateConnectorFn,
@@ -11,17 +10,17 @@ import {
   useConnect,
   useDisconnect,
   useEnsAvatar,
-  useReconnect,
   useSignMessage,
 } from "wagmi";
 import { IconButton } from "./IconButton";
 import toast from "react-hot-toast";
-import MetamaskSVG from "../../public/images/icons/metamask-icon.svg";
 import { SiweMessage } from "siwe";
-import { getCsrfToken, signIn, useSession } from "next-auth/react";
+import { getCsrfToken, signIn, signOut, useSession } from "next-auth/react";
 import CustomToast from "./CustomToast";
-import { BiLogIn, BiLogOut, BiUserCircle } from "react-icons/bi";
-import { MdLogin } from "react-icons/md";
+import { BiLogIn, BiLogOut } from "react-icons/bi";
+import { config } from "../../wagmi";
+import { watchAccount } from "@wagmi/core";
+
 export const ConnectWalletButton = () => {
   const { isPending, connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
@@ -57,33 +56,49 @@ export const ConnectWalletButton = () => {
       });
     } catch (error) {
       toast.custom((t) => (
-        <CustomToast
-          description="Please sign to get a session"
-          t={t}
-          type="error"
-        />
+        <CustomToast description="Please sign to get a session" t={t} type="error" />
       ));
     }
   }, [address, chainId, signMessageAsync]);
 
-  // useEffect(() => {
-  //   if (isConnected && !session) {
-  //     handleLogin();
-  //   }
-  // }, [handleLogin, isConnected, session]);
+  const handleLogout = () => {
+    disconnect();
+    signOut();
+  };
+
+  useEffect(() => {
+    if (isConnected && sessionStatus === "unauthenticated") {
+      handleLogin();
+    }
+
+    const unwatch = watchAccount(config, {
+      onChange(data) {
+        if (!data.address && isConnected) {
+          signOut();
+          return;
+        }
+      },
+    });
+
+    return () => {
+      unwatch();
+    };
+  }, [handleLogin, isConnected, sessionStatus]);
 
   return (
     <>
-      {isConnected && session && address && (
+      {isConnected && session && (
         <div className="flex items-center justify-between gap-2 text-sm py-1 ">
           {ensAvatar && <Image src={ensAvatar} alt={`${address}`} />}
-          <span className="font-semibold text-green-500">{`${address.slice(
-            0,
-            10
-          )}...${address.slice(-6)}`}</span>
+          {address && (
+            <span className="font-semibold text-green-500">{`${address.slice(
+              0,
+              10
+            )}...${address.slice(-6)}`}</span>
+          )}
           <IconButton
             loading={isPending}
-            onClick={() => disconnect()}
+            onClick={handleLogout}
             className="bg-white text-black rounded-md flex"
           >
             <BiLogOut size={21} />
@@ -110,9 +125,7 @@ export const ConnectWalletButton = () => {
             onClick={async () => connectWallet(cnn)}
             className="flex space-x-2 px-4 bg-white"
           >
-            {cnn.icon && (
-              <Image src={cnn.icon} alt={cnn.name} width={24} height={24} />
-            )}
+            {cnn.icon && <Image src={cnn.icon} alt={cnn.name} width={24} height={24} />}
             <span className="font-normal text-black"> {cnn.name}</span>
           </IconButton>
         ))}
