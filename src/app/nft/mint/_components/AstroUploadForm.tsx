@@ -7,12 +7,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { Button } from "./ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { Textarea } from "../../../../components/ui/textarea";
+import { Button } from "../../../../components/ui/button";
 
-import Modal from "./Modal";
+import Modal from "../../../../components/Modal";
 import { Trait } from "./Trait";
 import { newTrait } from "@/constants/constants";
 import { NFTForm as NFTFormSchema } from "@/schema/nft";
@@ -20,9 +27,9 @@ import { cn } from "@/lib/utils";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
-import { config } from "../../config";
-import AstroCard from "./AstroCard";
-import Clipboard from "./Clipboard";
+import { config } from "../../../../../config";
+import AstroCard from "../../../../components/AstroCard";
+import Clipboard from "../../../../components/Clipboard";
 import SubmitButton from "@/app/nft/mint/_components/SubmitButton";
 import { NFTForm } from "@/types/forms";
 

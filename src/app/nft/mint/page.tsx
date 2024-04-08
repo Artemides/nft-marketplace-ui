@@ -1,4 +1,4 @@
-import { AstroUploadForm } from "@/components/AstroUploadForm";
+import { AstroUploadForm } from "@/app/nft/mint/_components/AstroUploadForm";
 
 export default function AstroMint() {
   return (

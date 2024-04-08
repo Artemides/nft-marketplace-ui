@@ -1,8 +1,8 @@
 import { IoMdClose } from "react-icons/io";
 
-import { FormControl, FormField, FormItem, FormMessage } from "./ui/form";
+import { FormControl, FormField, FormItem, FormMessage } from "../../../../components/ui/form";
 import { Control } from "react-hook-form";
-import { Input } from "./ui/input";
+import { Input } from "../../../../components/ui/input";
 import React from "react";
 import { z } from "zod";
 import { NFTForm } from "@/schema/nft";
