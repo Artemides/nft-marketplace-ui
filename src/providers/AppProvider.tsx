@@ -2,8 +2,8 @@
 
 import React, { ReactNode } from "react";
 import Wagmi from "./Wagmi";
-import ToasterProvider from "../../old/providers/ToasterProvider";
 import { SessionProvider } from "next-auth/react";
+import ToasterProvider from "./ToasterProvider";
 
 const AppProvider = ({ children }: { children: ReactNode }) => {
   return (

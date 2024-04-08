@@ -33,7 +33,7 @@ const initialMetadata: NFTForm = {
   file: null,
 };
 
-const AstroUploadF = () => {
+export const AstroUploadForm = () => {
   const nftFileRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<NFTForm>({
@@ -270,5 +270,3 @@ const AstroUploadF = () => {
     </section>
   );
 };
-
-export default AstroUploadF;
