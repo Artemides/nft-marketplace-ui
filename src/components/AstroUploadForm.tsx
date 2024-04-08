@@ -1,12 +1,11 @@
 "use client";
 
-import React, { memo, useEffect, useMemo, useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { Address, ProviderRpcError, TransactionExecutionError } from "viem";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { z } from "zod";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
@@ -14,7 +13,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 
 import Modal from "./Modal";
-import { Trait } from "./Trait2";
+import { Trait } from "./Trait";
 import { newTrait } from "@/constants/constants";
 import { NFTForm as NFTFormSchema } from "@/schema/nft";
 import { cn } from "@/lib/utils";
@@ -61,11 +60,6 @@ const AstroUploadF = () => {
     isPending,
   } = useWriteAstroNft();
 
-  // const [formActionState, onFormAction] = useFormState(uploadToPinata, {
-  //   status: "default",
-  // });
-  //derive
-
   const { isSubmitting, isDirty, isValid } = form.formState;
   const unableToSubmit = isPending || isSubmitting || !isValid || !isDirty;
 
@@ -74,9 +68,6 @@ const AstroUploadF = () => {
   const imageURI = useMemo(() => {
     return file ? URL.createObjectURL(file) : null;
   }, [file]);
-
-  // console.log({ imageURI });
-  //event handlers
 
   const handleBrowseFile = () => {
     if (!nftFileRef.current) return;
