@@ -1,9 +1,10 @@
 "use server";
 
 import { handleActionError } from "@/lib/errors";
-import { NFTBaseMetadata, NFTFile, NFTMetadata } from "@/schema/nft";
+import { NFTBaseMetadata, NFTFile } from "@/schema/nft";
 import { NFTFormActionState } from "@/types/actions";
 import { NFTForm } from "@/types/forms";
+import { NFTMetadata } from "@/types/types";
 
 export const uploadToPinata = async (
   // _: NFTFormActionState,
