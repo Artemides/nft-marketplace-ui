@@ -1,31 +1,31 @@
 import fs from "fs";
 import pinata from "../../pinata.config";
 import { PinataPinOptions, PinataPinResponse } from "@pinata/sdk";
-import formidable from "formidable";
-import { MetadataNFT } from "../types/types";
+import { NFTMetadata } from "@/types/types";
+import { unlinkFileLocally, uploadFileLocally } from "./files";
+import path from "path";
 
-export const saveFile = async (
-  file: formidable.File
-): Promise<PinataPinResponse> => {
+export const saveFile = async (file: File) => {
   try {
-    const stream = fs.createReadStream(file.filepath);
+    const { name, ext: type } = path.parse(file.name);
+    const filepath = await uploadFileLocally(file);
+    const stream = fs.createReadStream(filepath);
     const options: PinataPinOptions = {
       pinataMetadata: {
-        name: file.originalFilename,
+        name,
         size: file.size,
-        type: file.mimetype,
+        type,
       },
     };
     const response = await pinata.pinFileToIPFS(stream, options);
-    fs.unlinkSync(file.filepath);
+    await unlinkFileLocally(filepath);
+
     return response;
   } catch (error) {
     throw error;
   }
 };
-export const saveJSON = async (
-  metadata: MetadataNFT & { image: string }
-): Promise<PinataPinResponse> => {
+export const saveJSON = async (metadata: NFTMetadata): Promise<PinataPinResponse> => {
   try {
     const options: PinataPinOptions = {};
     const response = await pinata.pinJSONToIPFS(metadata, options);

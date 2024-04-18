@@ -23,4 +23,4 @@ export type NFTFile = {
   file: File | null;
 };
 
-type NFTForm = z.infer<typeof NFTFormSchema>;
+export type NFTForm = z.infer<typeof NFTFormSchema>;
