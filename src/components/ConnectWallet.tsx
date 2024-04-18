@@ -18,8 +18,8 @@ import { SiweMessage } from "siwe";
 import { getCsrfToken, signIn, signOut, useSession } from "next-auth/react";
 import CustomToast from "./CustomToast";
 import { BiLogIn, BiLogOut } from "react-icons/bi";
-import { config } from "../../wagmi";
 import { watchAccount } from "@wagmi/core";
+import { wagmiConfig } from "../../wagmi";
 
 export const ConnectWalletButton = () => {
   const { isPending, connect, connectors } = useConnect();
@@ -71,7 +71,7 @@ export const ConnectWalletButton = () => {
       handleLogin();
     }
 
-    const unwatch = watchAccount(config, {
+    const unwatch = watchAccount(wagmiConfig, {
       onChange(data) {
         if (!data.address && isConnected) {
           signOut();
