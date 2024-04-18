@@ -25,9 +25,7 @@ export const saveFile = async (file: File) => {
     throw error;
   }
 };
-export const saveJSON = async (
-  metadata: NFTMetadata & { image: string }
-): Promise<PinataPinResponse> => {
+export const saveJSON = async (metadata: NFTMetadata): Promise<PinataPinResponse> => {
   try {
     const options: PinataPinOptions = {};
     const response = await pinata.pinJSONToIPFS(metadata, options);
