@@ -28,7 +28,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { uploadToPinata } from "@/actions/pinataUpload";
 import { useWriteAstroNft } from "@/nftMarketHooks";
 import { config } from "../../../../../config";
-import AstroCard from "../../../../components/AstroCard";
+import NFTCard from "../../../../components/nft-card";
 import Clipboard from "../../../../components/Clipboard";
 import SubmitButton from "@/app/nft/mint/_components/SubmitButton";
 import { NFTForm } from "@/types/forms";
@@ -257,7 +257,7 @@ export const AstroUploadForm = () => {
         </div>
       </div>
       <Modal isOpen={isSuccess} onClose={handleContractReset}>
-        <AstroCard image={imageURI} imageDescripion={"image"}>
+        <NFTCard image={imageURI} imageDescripion={"image"}>
           <div className="space-y-[4px]">
             <h2 className="text-xl font-semibold first-letter:uppercase">{name}</h2>
             <p className="font-thin">{description}</p>
@@ -272,7 +272,7 @@ export const AstroUploadForm = () => {
               <Button variant={"secondary"}>Gallery</Button>
             </div>
           </div>
-        </AstroCard>
+        </NFTCard>
       </Modal>
     </section>
   );

@@ -9,7 +9,7 @@ type NFTRoute = {
 
 const routes: NFTRoute[] = [
   { name: "Mint", href: "/nft/mint" },
-  { name: "Gallery", href: "/nft/mint" },
+  { name: "Gallery", href: "/gallery" },
   { name: "List", href: "/nft/mint" },
   { name: "Swap", href: "/nft/mint" },
 ];
