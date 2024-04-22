@@ -3,6 +3,7 @@ import NFTCard from "@/components/nft-card";
 import { Button } from "@/components/ui/button";
 import { useAlchemy } from "@/hooks/use-alchemy";
 import { OwnedNft, OwnedNftsResponse } from "alchemy-sdk";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -16,7 +17,16 @@ const mockNft: Partial<OwnedNft> = {
 export const NFTList = () => {
   const { address } = useAccount();
   const { nft } = useAlchemy();
-  const [ownedNfts, setOwnedNfts] = useState<Partial<OwnedNft>[]>([mockNft]);
+  const [ownedNfts, setOwnedNfts] = useState<Partial<OwnedNft>[]>([
+    mockNft,
+    mockNft,
+    mockNft,
+    mockNft,
+    mockNft,
+    mockNft,
+    mockNft,
+    mockNft,
+  ]);
 
   // useEffect(() => {
   //   if (!address) return;
@@ -30,13 +40,13 @@ export const NFTList = () => {
   // }, [address, nft]);
 
   return (
-    <ul className="flex h-[500px]">
+    <ul className="grid grid-cols-6 gap-2">
       {ownedNfts.map((nft) => (
         <li key={nft.mint?.transactionHash}>
           <NFTCard
             image={nft.image?.originalUrl!}
             imageDescripion={nft.description || "owned nft"}
-            className="w-[250px] aspect-w-5 aspect-h-6 border-gray-500/50"
+            className="w-full aspect-w-5 aspect-h-6 border-gray-500/50"
             bgClassName="p-2"
           >
             <div className="">
