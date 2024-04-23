@@ -44,9 +44,9 @@ export const AddressStats = () => {
         )}
       </div>
       <div className="space-y-2">
-        <ul className="grid grid-cols-4 gap-x-4 items-center  divide-x-[1px] divide-neutral-500/20">
+        <ul className="grid grid-cols-4 items-center gap-x-4  divide-x-[1px] divide-neutral-500/50 [&>li]:pl-4">
           {stats.map((stat) => (
-            <li key={stat.description}>
+            <li key={stat.description} className="first-of-type:pl-0">
               <Stat value={stat.value} description={stat.description} />
             </li>
           ))}
