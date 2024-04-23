@@ -3,11 +3,10 @@
 import React from "react";
 import { useAccount } from "wagmi";
 import { blo } from "blo";
-import Image from "next/image";
 import { Stat } from "./stat";
 import { Button } from "@/components/ui/button";
-import { BiWallet } from "react-icons/bi";
 import { MdWallet } from "react-icons/md";
+import { Avatar } from "@/components/avatar";
 
 const stats = [
   {
@@ -30,19 +29,9 @@ const stats = [
 
 export const AddressStats = () => {
   const { address } = useAccount();
-
   return (
     <div className="flex items-center gap-x-12">
-      <div className="flex flex-col items-center gap-y-2">
-        <div className="relative size-28 rounded-full border-[1px] border-neutral-400/25 bg-neutral-500 overflow-hidden">
-          {address && <Image src={blo(address)} alt={address} className="w-full h-full" fill />}
-        </div>
-        {address && (
-          <small className="text-xs">
-            {address.slice(0, 8)}...{address.slice(34)}
-          </small>
-        )}
-      </div>
+      <Avatar image={address && blo(address)} name={address} />
       <div className="space-y-2">
         <ul className="grid grid-cols-4 items-center gap-x-4  divide-x-[1px] divide-neutral-500/50 [&>li]:pl-4">
           {stats.map((stat) => (
