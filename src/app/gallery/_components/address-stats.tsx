@@ -31,7 +31,7 @@ export const AddressStats = () => {
   const { address } = useAccount();
   return (
     <div className="flex items-center gap-x-12">
-      <Avatar image={address && blo(address)} name={address} />
+      <Avatar image={address && blo(address)} name={address} size={"xl"} displayName />
       <div className="space-y-2">
         <ul className="grid grid-cols-4 items-center gap-x-4  divide-x-[1px] divide-neutral-500/50 [&>li]:pl-4">
           {stats.map((stat) => (

@@ -13,7 +13,7 @@ const Gallery = async () => {
       <div className="py-8">
         <AddressStats />
       </div>
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-x-8">
         <div className="col-span-1">
           <ListingActivity />
         </div>
