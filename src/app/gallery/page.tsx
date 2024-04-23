@@ -4,6 +4,7 @@ import { alchemy } from "../../../alchemy.config";
 import { config } from "../../../config";
 import { NFTList } from "./_components/nft-list";
 import { AddressStats } from "./_components/address-stats";
+import { ListingActivity } from "./_components/listing-activity";
 
 const Gallery = async () => {
   return (
@@ -12,7 +13,14 @@ const Gallery = async () => {
       <div className="py-8">
         <AddressStats />
       </div>
-      <NFTList />
+      <div className="grid grid-cols-3">
+        <div className="col-span-1">
+          <ListingActivity />
+        </div>
+        <div className="col-span-2">
+          <NFTList />
+        </div>
+      </div>
     </main>
   );
 };
